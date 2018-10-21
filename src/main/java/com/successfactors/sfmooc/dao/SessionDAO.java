@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.dao;
 
+import com.successfactors.sfmooc.domain.FetchParams;
 import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.domain.SessionVO;
 
@@ -8,7 +9,7 @@ import java.util.List;
 public interface SessionDAO {
 
     int editSession(Session session);
-    List<Session> getSessionList();
+    List<Session> getSessionList(FetchParams fetchParams);
 
 //    List<Session> getSessionList(String season);
 //

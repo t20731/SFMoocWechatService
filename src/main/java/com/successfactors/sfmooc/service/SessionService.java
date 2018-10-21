@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.service;
 
+import com.successfactors.sfmooc.domain.FetchParams;
 import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.domain.SessionVO;
 
@@ -8,7 +9,7 @@ import java.util.Set;
 
 public interface SessionService {
     int editSession(Session session);
-    List<Session> getSessionList();
+    List<Session> getSessionList(FetchParams fetchParams);
 //    Session getSessionByDate(String date);
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);

@@ -1,9 +1,6 @@
 package com.successfactors.sfmooc.controller;
 
-import com.successfactors.sfmooc.domain.Direction;
-import com.successfactors.sfmooc.domain.Result;
-import com.successfactors.sfmooc.domain.Session;
-import com.successfactors.sfmooc.domain.SessionVO;
+import com.successfactors.sfmooc.domain.*;
 import com.successfactors.sfmooc.service.DirectionService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
@@ -11,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/session")
@@ -23,14 +19,20 @@ public class SessionController {
     @Autowired
     private DirectionService directionService;
 
-    @RequestMapping(value="/all", method = RequestMethod.GET)
-    public Result loadAll(){
+    @RequestMapping(value="/all", method = RequestMethod.POST)
+    public Result loadAll(@RequestBody FetchParams fetchParams){
         SessionVO sessionVO = new SessionVO();
         List<Direction> directions = directionService.getAll();
-        List<Session> sessions = sessionService.getSessionList();
+        List<Session> sessions = sessionService.getSessionList(fetchParams);
         sessionVO.setDirections(directions);
         sessionVO.setSessions(sessions);
         return new Result(1, Constants.SUCCESS, sessionVO);
+    }
+
+    @RequestMapping(value="/list", method = RequestMethod.POST)
+    public Result getSessionList(@RequestBody FetchParams fetchParams){
+        List<Session> sessions = sessionService.getSessionList(fetchParams);
+        return new Result(1, Constants.SUCCESS, sessions);
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)

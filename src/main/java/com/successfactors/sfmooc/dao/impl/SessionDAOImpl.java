@@ -1,23 +1,26 @@
 package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.SessionDAO;
-import com.successfactors.sfmooc.domain.Direction;
-import com.successfactors.sfmooc.domain.Session;
-import com.successfactors.sfmooc.domain.SessionVO;
-import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.domain.*;
 import com.successfactors.sfmooc.utils.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Repository
-public class SessionDAOImpl implements SessionDAO{
+public class SessionDAOImpl implements SessionDAO {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -33,12 +36,38 @@ public class SessionDAOImpl implements SessionDAO{
     }
 
     @Override
-    public List<Session> getSessionList() {
-       String query = "select s2.id as sid, s2.topic, s2.location, s2.direction_id,  s2.status, u.id as uid, u.nickname, b.total_members " +
-               " from user u, session s2,  (select a.id, count(a.user_id) as total_members  from " +
-               " (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap  on  s1.id = usmap.session_id) a group by a.id) b " +
-               " where s2.owner = u.id and s2.id = b.id;";
-        return jdbcTemplate.query(query, new RowMapper<Session>() {
+    public List<Session> getSessionList(FetchParams fetchParams) {
+        String query = "select s2.id as sid, s2.topic, s2.location, s2.direction_id,  s2.status, u.id as uid, u.nickname, b.total_members " +
+                " from user u, session s2,  (select a.id, count(a.user_id) as total_members  from " +
+                " (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap  on  s1.id = usmap.session_id) a group by a.id) b " +
+                " where s2.owner = u.id and s2.id = b.id ";
+        StringBuilder sb = new StringBuilder(query);
+        List<Object> params = new ArrayList<>();
+        int direction = fetchParams.getDirectionId();
+        if (direction > 0) {
+            sb.append("and direction_id = ? ");
+            params.add(direction);
+        }
+        String keyWord = fetchParams.getKeyWord();
+        if (!StringUtils.isEmpty(keyWord)) {
+            sb.append("and topic like concat('%',?,'%') ");
+            params.add(keyWord);
+        }
+        sb.append("order by ");
+        String orderField = fetchParams.getOrderField();
+        if (!StringUtils.isEmpty(orderField)) {
+            sb.append(orderField).append(" desc").append(", ");
+        }
+        sb.append("sid desc limit ?, ?");
+        params.add(fetchParams.getStartPage());
+        params.add(fetchParams.getPageSize());
+        Object[] paramsArray = new Object[params.size()];
+        for (int i = 0; i < params.size(); i++) {
+            paramsArray[i] = params.get(i);
+        }
+        logger.info("Session list query: " + sb.toString());
+        logger.info("Params: " + params);
+        return jdbcTemplate.query(sb.toString(), paramsArray, new RowMapper<Session>() {
             @Override
             public Session mapRow(ResultSet resultSet, int i) throws SQLException {
                 Session session = new Session();

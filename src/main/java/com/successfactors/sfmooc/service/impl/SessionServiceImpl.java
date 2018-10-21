@@ -1,6 +1,7 @@
 package com.successfactors.sfmooc.service.impl;
 
 import com.successfactors.sfmooc.dao.SessionDAO;
+import com.successfactors.sfmooc.domain.FetchParams;
 import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.domain.SessionVO;
 import com.successfactors.sfmooc.service.CacheService;
@@ -26,8 +27,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public List<Session> getSessionList() {
-        return sessionDAO.getSessionList();
+    public List<Session> getSessionList(FetchParams fetchParams) {
+        return sessionDAO.getSessionList(fetchParams);
     }
 
     //    public List<Session> getSessionList() {
