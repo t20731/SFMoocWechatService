@@ -10,6 +10,7 @@ import java.util.Set;
 public interface SessionService {
     int editSession(Session session);
     List<Session> getSessionList(FetchParams fetchParams);
+    Session getSessionById(Integer id);
 //    Session getSessionByDate(String date);
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);

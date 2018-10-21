@@ -31,6 +31,11 @@ public class SessionServiceImpl implements SessionService {
         return sessionDAO.getSessionList(fetchParams);
     }
 
+    @Override
+    public Session getSessionById(Integer id) {
+        return sessionDAO.getSessionById(id);
+    }
+
     //    public List<Session> getSessionList() {
 //       // List<Session> sessionList = (List<Session>) cacheService.getSessionCache().values();
 //        String season = getCurrentSeason();

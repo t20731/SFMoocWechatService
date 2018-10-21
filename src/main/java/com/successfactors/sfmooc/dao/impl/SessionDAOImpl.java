@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
@@ -25,6 +28,38 @@ public class SessionDAOImpl implements SessionDAO {
     private JdbcTemplate jdbcTemplate;
 
     @Override
+    public Session getSessionById(Integer id) {
+        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.location, s.status, " +
+                " u.id as uid, u.nickname, u.avatarUrl from user u, session s where s.owner = u.id and s.id = ?";
+        List<Session> sessions = jdbcTemplate.query(query, new Object[]{id}, new RowMapper<Session>() {
+            @Nullable
+            @Override
+            public Session mapRow(ResultSet resultSet, int i) throws SQLException {
+                Session session = new Session();
+                session.setId(resultSet.getInt("sid"));
+                session.setTopic(resultSet.getString("topic"));
+                session.setDescription(resultSet.getString("description"));
+                session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
+                session.setEndDate(DateUtil.formatDateToMinutes(resultSet.getString("end_date")));
+                session.setLocation(resultSet.getString("location"));
+                session.setStatus(resultSet.getInt("status"));
+                User user = new User();
+                user.setId(resultSet.getString("uid"));
+                user.setNickName(resultSet.getString("nickname"));
+                user.setAvatarUrl(resultSet.getString("avatarUrl"));
+                session.setOwner(user);
+                return session;
+            }
+        });
+        if (sessions.isEmpty()) {
+            return null;
+        } else {
+            return sessions.get(0);
+        }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int editSession(Session session) {
         String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location, " +
                 "direction_id, difficulty, status, created_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

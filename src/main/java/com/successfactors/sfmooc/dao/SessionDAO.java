@@ -10,6 +10,8 @@ public interface SessionDAO {
 
     int editSession(Session session);
     List<Session> getSessionList(FetchParams fetchParams);
+    Session getSessionById(Integer id);
+    //int register(Integer sessionId, String userId);
 
 //    List<Session> getSessionList(String season);
 //

@@ -1,5 +1,7 @@
 package com.successfactors.sfmooc.utils;
 
+import org.springframework.util.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,6 +17,13 @@ public class DateUtil {
 
     public static String formatDateToMinutes(Date date){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+    }
+
+    public static String formatDateToMinutes(String dateStr){
+        if(!StringUtils.isEmpty(dateStr) && dateStr.length() >= 21){
+            return dateStr.substring(0, dateStr.length() - 5);
+        }
+        return dateStr;
     }
 
     public static void main(String... args){
