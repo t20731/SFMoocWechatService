@@ -14,5 +14,6 @@ public class Constants {
 
     public static final String NO_DATA = "no_data";
 
+    public static final String REGISTERED = "registered";
 
 }

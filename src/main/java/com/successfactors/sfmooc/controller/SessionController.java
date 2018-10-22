@@ -5,6 +5,7 @@ import com.successfactors.sfmooc.service.DirectionService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,8 +48,21 @@ public class SessionController {
         if (session == null) {
             return new Result(0, Constants.NO_DATA);
         } else {
-            return new Result(0, Constants.SUCCESS, session);
+            return new Result(1, Constants.SUCCESS, session);
         }
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public Result register(@RequestBody Enrollment enrollment) {
+        if(StringUtils.isEmpty(enrollment.getUserId()) || enrollment.getSessionId() == null ||
+                enrollment.getSessionId() == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = sessionService.register(enrollment.getUserId(), enrollment.getSessionId());
+        if(status == 0){
+            return new Result(status, Constants.REGISTERED);
+        }
+        return new Result(status, Constants.SUCCESS);
     }
 
 //    @RequestMapping(value="/list", method = RequestMethod.GET)

@@ -11,6 +11,7 @@ public interface SessionService {
     int editSession(Session session);
     List<Session> getSessionList(FetchParams fetchParams);
     Session getSessionById(Integer id);
+    int register(String userId, Integer sessionId);
 //    Session getSessionByDate(String date);
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);

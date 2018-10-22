@@ -22,6 +22,11 @@ public class SessionServiceImpl implements SessionService {
     private SessionDAO sessionDAO;
 
     @Override
+    public int register(String userId, Integer sessionId) {
+        return sessionDAO.register(userId, sessionId);
+    }
+
+    @Override
     public int editSession(Session session) {
         return sessionDAO.editSession(session);
     }
