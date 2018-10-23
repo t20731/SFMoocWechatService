@@ -7,7 +7,7 @@ public class Session {
     private String description;
     private String startDate;
     private String endDate;
-    private String location;
+    private Location location;
     private Direction direction;
     private SessionType sessionType;
     private int difficulty;
@@ -71,11 +71,11 @@ public class Session {
         this.endDate = endDate;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

@@ -8,6 +8,8 @@ public class SessionVO {
 
     private List<Session> sessions;
 
+    private List<Location> locations;
+
     public SessionVO() {
     }
 
@@ -25,5 +27,13 @@ public class SessionVO {
 
     public void setSessions(List<Session> sessions) {
         this.sessions = sessions;
+    }
+
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
     }
 }

@@ -30,14 +30,7 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int register(String userId, Integer sessionId) {
-        int count = jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
-                "user_id = ? and session_id = ?", new Object[]{userId, sessionId}, new RowMapper<Integer>() {
-            @Nullable
-            @Override
-            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getInt("cnt");
-            }
-        });
+        int count = getUserSessionCount(userId, sessionId);
         int result = 0;
         if (count == 0) {
             result = jdbcTemplate.update("insert into user_session_map(user_id, session_id) " +
@@ -46,11 +39,22 @@ public class SessionDAOImpl implements SessionDAO {
         return result;
     }
 
+    private int getUserSessionCount(String userId, Integer sessionId) {
+        return jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
+                "user_id = ? and session_id = ?", new Object[]{userId, sessionId}, new RowMapper<Integer>() {
+            @Nullable
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("cnt");
+            }
+        });
+    }
+
     @Override
-    public Session getSessionById(Integer id) {
-        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.location, s.status, " +
-                " u.id as uid, u.nickname, u.avatarUrl from user u, session s where s.owner = u.id and s.id = ?";
-        List<Session> sessions = jdbcTemplate.query(query, new Object[]{id}, new RowMapper<Session>() {
+    public UserSession getSessionById(Integer sessionId, String userId) {
+        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, l.name as location, s.status, " +
+                "u.id as uid, u.nickname, u.avatarUrl from user u, location l, session s where s.owner = u.id and s.location_id = l.id and s.id = ? ";
+        List<Session> sessions = jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<Session>() {
             @Nullable
             @Override
             public Session mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -60,7 +64,9 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setDescription(resultSet.getString("description"));
                 session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
                 session.setEndDate(DateUtil.formatDateToMinutes(resultSet.getString("end_date")));
-                session.setLocation(resultSet.getString("location"));
+                Location location = new Location();
+                location.setName(resultSet.getString("location"));
+                session.setLocation(location);
                 session.setStatus(resultSet.getInt("status"));
                 User user = new User();
                 user.setId(resultSet.getString("uid"));
@@ -70,31 +76,43 @@ public class SessionDAOImpl implements SessionDAO {
                 return session;
             }
         });
-        if (sessions.isEmpty()) {
+        if (sessions == null || sessions.isEmpty()) {
             return null;
         } else {
-            return sessions.get(0);
+            UserSession userSession = new UserSession();
+            userSession.setSession(sessions.get(0));
+            if (userId == null) {
+                userSession.setUserRegistered(false);
+            } else {
+                int count = getUserSessionCount(userId, sessionId);
+                if (count > 0) {
+                    userSession.setUserRegistered(true);
+                } else {
+                    userSession.setUserRegistered(false);
+                }
+            }
+            return userSession;
         }
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int editSession(Session session) {
-        String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location, " +
+        String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location_id, " +
                 "direction_id, difficulty, status, created_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String created_date = DateUtil.formatDateTime(new Date());
         int status = jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
-                session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation(),
+                session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
                 session.getDirection().getId(), 0, 1, created_date});
         return status;
     }
 
     @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
-        String query = "select s2.id as sid, s2.topic, s2.location, s2.direction_id, d.image_src, s2.status, u.id as uid, u.nickname, b.total_members " +
-                " from user u, session s2, direction d, (select a.id, count(a.user_id) as total_members  from " +
+        String query = "select s2.id as sid, s2.topic, l.name as location, s2.direction_id, d.image_src, s2.status, u.id as uid, u.nickname, b.total_members " +
+                " from user u, session s2, direction d, location l, (select a.id, count(a.user_id) as total_members  from " +
                 " (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap  on  s1.id = usmap.session_id) a group by a.id) b " +
-                " where s2.owner = u.id and s2.direction_id = d.id and s2.id = b.id ";
+                " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and  s2.id = b.id ";
         StringBuilder sb = new StringBuilder(query);
         List<Object> params = new ArrayList<>();
         int direction = fetchParams.getDirectionId();
@@ -127,7 +145,9 @@ public class SessionDAOImpl implements SessionDAO {
                 Session session = new Session();
                 session.setId(resultSet.getInt("sid"));
                 session.setTopic(resultSet.getString("topic"));
-                session.setLocation(resultSet.getString("location"));
+                Location location = new Location();
+                location.setName(resultSet.getString("location"));
+                session.setLocation(location);
                 Direction direction = new Direction();
                 direction.setId(resultSet.getInt("direction_id"));
                 direction.setImageSrc(resultSet.getString("image_src"));

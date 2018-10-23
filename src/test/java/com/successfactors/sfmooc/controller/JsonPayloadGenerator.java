@@ -1,10 +1,7 @@
 package com.successfactors.sfmooc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.successfactors.sfmooc.domain.Direction;
-import com.successfactors.sfmooc.domain.FetchParams;
-import com.successfactors.sfmooc.domain.Session;
-import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.domain.*;
 import com.successfactors.sfmooc.utils.DateUtil;
 import org.junit.Test;
 
@@ -51,7 +48,9 @@ public class JsonPayloadGenerator {
         calendar.setTime(new Date());
         calendar.add(Calendar.MINUTE, 30);
         session.setEndDate(DateUtil.formatDateToMinutes(calendar.getTime()));
-        session.setLocation("PVG03 D5.7");
+        Location location = new Location();
+        location.setName("PVG03 D5.7");
+        session.setLocation(location);
         session.setDirection(new Direction(3));
         session.setDifficulty(0);
         session.setStatus(1);

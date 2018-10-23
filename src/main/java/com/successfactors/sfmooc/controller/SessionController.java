@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.controller;
 
 import com.successfactors.sfmooc.domain.*;
 import com.successfactors.sfmooc.service.DirectionService;
+import com.successfactors.sfmooc.service.LocationService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,19 @@ public class SessionController {
 
     @Autowired
     private DirectionService directionService;
+
+    @Autowired
+    private LocationService locationService;
+
+    @RequestMapping(value = "/init", method = RequestMethod.GET)
+    public Result init() {
+        SessionVO sessionVO = new SessionVO();
+        List<Direction> directions = directionService.getAll();
+        List<Location> locations = locationService.getAll();
+        sessionVO.setDirections(directions);
+        sessionVO.setLocations(locations);
+        return new Result(1, Constants.SUCCESS, sessionVO);
+    }
 
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     public Result loadAll(@RequestBody FetchParams fetchParams) {
@@ -42,9 +56,13 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Result getSessionById(@PathVariable("id") Integer id) {
-        Session session = sessionService.getSessionById(id);
+    @RequestMapping(value = "/detail", method = RequestMethod.POST)
+    public Result getSessionById(@RequestBody Enrollment enrollment) {
+        if(enrollment == null || enrollment.getSessionId() == null ||
+                enrollment.getSessionId() == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        UserSession session = sessionService.getSessionById(enrollment.getSessionId(), enrollment.getUserId());
         if (session == null) {
             return new Result(0, Constants.NO_DATA);
         } else {

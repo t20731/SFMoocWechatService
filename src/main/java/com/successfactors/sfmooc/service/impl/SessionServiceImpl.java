@@ -4,6 +4,7 @@ import com.successfactors.sfmooc.dao.SessionDAO;
 import com.successfactors.sfmooc.domain.FetchParams;
 import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.domain.SessionVO;
+import com.successfactors.sfmooc.domain.UserSession;
 import com.successfactors.sfmooc.service.CacheService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.DateUtil;
@@ -37,8 +38,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Session getSessionById(Integer id) {
-        return sessionDAO.getSessionById(id);
+    public UserSession getSessionById(Integer sessionId, String userId) {
+        return sessionDAO.getSessionById(sessionId, userId);
     }
 
     //    public List<Session> getSessionList() {
