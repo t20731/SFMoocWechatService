@@ -48,6 +48,11 @@ public class SessionController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public Result getSessionList(@RequestBody FetchParams fetchParams) {
+        if(fetchParams != null && !StringUtils.isEmpty(fetchParams.getOrderField())){
+            if(!Constants.ORDER_FIELD_SET.contains(fetchParams.getOrderField())){
+                return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+            }
+        }
         List<Session> sessions = sessionService.getSessionList(fetchParams);
         return new Result(1, Constants.SUCCESS, sessions);
     }

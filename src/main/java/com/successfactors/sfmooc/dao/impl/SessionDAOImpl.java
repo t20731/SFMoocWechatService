@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.SessionDAO;
 import com.successfactors.sfmooc.domain.*;
+import com.successfactors.sfmooc.utils.Constants;
 import com.successfactors.sfmooc.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,7 @@ import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class SessionDAOImpl implements SessionDAO {
@@ -40,7 +39,7 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
-    public int getEnrollments(Integer sessionId){
+    public int getEnrollments(Integer sessionId) {
         return jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
                 "session_id = ?", new Object[]{sessionId}, new RowMapper<Integer>() {
             @Nullable
@@ -122,7 +121,7 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
         String query = "select s2.id as sid, s2.topic, s2.difficulty, l.name as location, s2.direction_id, d.image_src, s2.status, " +
-                "s2.created_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, "+
+                "s2.created_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
                 "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
                 "on s1.id = usmap.session_id) a group by a.id) b " +
                 " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and s2.id = b.id ";
@@ -134,17 +133,17 @@ public class SessionDAOImpl implements SessionDAO {
             params.add(direction);
         }
         int difficulty = fetchParams.getDifficulty();
-        if(difficulty != -1){
+        if (difficulty != -1) {
             sb.append("and s2.difficulty = ? ");
             params.add(difficulty);
         }
         int status = fetchParams.getStatus();
-        if(status != -1){
+        if (status != -1) {
             sb.append("and s2.status = ? ");
             params.add(status);
         }
         String owner = fetchParams.getOwnerId();
-        if(owner != null){
+        if (owner != null) {
             sb.append("and s2.owner = ? ");
             params.add(owner);
         }
@@ -154,14 +153,14 @@ public class SessionDAOImpl implements SessionDAO {
             params.add(keyWord);
         }
         String userId = fetchParams.getUserId();
-        if(userId != null){
+        if (userId != null) {
             sb = new StringBuilder("select s.* from (").append(sb.toString()).append(") s, user_session_map usmap1 " +
                     "where s.sid = usmap1.session_id and usmap1.user_id = ? ");
             params.add(userId);
         }
         sb.append("order by ");
         String orderField = fetchParams.getOrderField();
-        if (!StringUtils.isEmpty(orderField)) {
+        if (!StringUtils.isEmpty(orderField) && Constants.ORDER_FIELD_SET.contains(orderField)) {
             sb.append(orderField).append(" desc").append(", ");
         }
         sb.append("sid desc limit ?, ?");

@@ -1,6 +1,16 @@
 package com.successfactors.sfmooc.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Constants {
+
+    public static Set<String> ORDER_FIELD_SET = new HashSet<>();
+
+    static {
+        ORDER_FIELD_SET.add(Constants.CREATED_DATE);
+        ORDER_FIELD_SET.add(Constants.TOTAL_MEMBERS);
+    }
 
     public static final Integer QUESTION_THRESHOLD = 3;
 
