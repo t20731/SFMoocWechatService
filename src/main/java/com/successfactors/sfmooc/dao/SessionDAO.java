@@ -13,6 +13,7 @@ public interface SessionDAO {
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
+    int getEnrollments(Integer sessionId);
 
 //    List<Session> getSessionList(String season);
 //

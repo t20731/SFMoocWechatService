@@ -6,6 +6,10 @@ public class FetchParams {
     private int directionId;
     private String orderField;
     private String keyWord;
+    private int difficulty = -1;
+    private String ownerId;
+    private String userId;
+    private int status = -1;
 
     public int getStartPage(){
         return (pageNum - 1) * pageSize;
@@ -49,5 +53,37 @@ public class FetchParams {
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

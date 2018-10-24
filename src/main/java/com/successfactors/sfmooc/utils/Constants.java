@@ -16,4 +16,8 @@ public class Constants {
 
     public static final String REGISTERED = "registered";
 
+    public static final String CREATED_DATE = "created_date";
+
+    public static final String TOTAL_MEMBERS = "total_members";
+
 }

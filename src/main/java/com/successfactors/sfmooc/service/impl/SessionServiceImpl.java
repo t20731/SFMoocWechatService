@@ -42,6 +42,11 @@ public class SessionServiceImpl implements SessionService {
         return sessionDAO.getSessionById(sessionId, userId);
     }
 
+    @Override
+    public int getEnrollments(Integer sessionId) {
+        return sessionDAO.getEnrollments(sessionId);
+    }
+
     //    public List<Session> getSessionList() {
 //       // List<Session> sessionList = (List<Session>) cacheService.getSessionCache().values();
 //        String season = getCurrentSeason();

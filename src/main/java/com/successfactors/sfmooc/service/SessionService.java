@@ -13,6 +13,7 @@ public interface SessionService {
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
+    int getEnrollments(Integer sessionId);
 //    Session getSessionByDate(String date);
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);

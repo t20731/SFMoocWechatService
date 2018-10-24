@@ -39,6 +39,18 @@ public class SessionDAOImpl implements SessionDAO {
         return result;
     }
 
+    @Override
+    public int getEnrollments(Integer sessionId){
+        return jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
+                "session_id = ?", new Object[]{sessionId}, new RowMapper<Integer>() {
+            @Nullable
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("cnt");
+            }
+        });
+    }
+
     private int getUserSessionCount(String userId, Integer sessionId) {
         return jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
                 "user_id = ? and session_id = ?", new Object[]{userId, sessionId}, new RowMapper<Integer>() {
@@ -103,27 +115,49 @@ public class SessionDAOImpl implements SessionDAO {
         String created_date = DateUtil.formatDateTime(new Date());
         int status = jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
                 session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
-                session.getDirection().getId(), 0, 1, created_date});
+                session.getDirection().getId(), session.getDifficulty(), 0, created_date});
         return status;
     }
 
     @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
-        String query = "select s2.id as sid, s2.topic, l.name as location, s2.direction_id, d.image_src, s2.status, u.id as uid, u.nickname, b.total_members " +
-                " from user u, session s2, direction d, location l, (select a.id, count(a.user_id) as total_members  from " +
-                " (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap  on  s1.id = usmap.session_id) a group by a.id) b " +
-                " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and  s2.id = b.id ";
+        String query = "select s2.id as sid, s2.topic, s2.difficulty, l.name as location, s2.direction_id, d.image_src, s2.status, " +
+                "s2.created_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, "+
+                "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
+                "on s1.id = usmap.session_id) a group by a.id) b " +
+                " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and s2.id = b.id ";
         StringBuilder sb = new StringBuilder(query);
         List<Object> params = new ArrayList<>();
         int direction = fetchParams.getDirectionId();
         if (direction > 0) {
-            sb.append("and direction_id = ? ");
+            sb.append("and s2.direction_id = ? ");
             params.add(direction);
+        }
+        int difficulty = fetchParams.getDifficulty();
+        if(difficulty != -1){
+            sb.append("and s2.difficulty = ? ");
+            params.add(difficulty);
+        }
+        int status = fetchParams.getStatus();
+        if(status != -1){
+            sb.append("and s2.status = ? ");
+            params.add(status);
+        }
+        String owner = fetchParams.getOwnerId();
+        if(owner != null){
+            sb.append("and s2.owner = ? ");
+            params.add(owner);
         }
         String keyWord = fetchParams.getKeyWord();
         if (!StringUtils.isEmpty(keyWord)) {
-            sb.append("and topic like concat('%',?,'%') ");
+            sb.append("and s2.topic like concat('%',?,'%') ");
             params.add(keyWord);
+        }
+        String userId = fetchParams.getUserId();
+        if(userId != null){
+            sb = new StringBuilder("select s.* from (").append(sb.toString()).append(") s, user_session_map usmap1 " +
+                    "where s.sid = usmap1.session_id and usmap1.user_id = ? ");
+            params.add(userId);
         }
         sb.append("order by ");
         String orderField = fetchParams.getOrderField();
@@ -145,6 +179,7 @@ public class SessionDAOImpl implements SessionDAO {
                 Session session = new Session();
                 session.setId(resultSet.getInt("sid"));
                 session.setTopic(resultSet.getString("topic"));
+                session.setDifficulty(resultSet.getInt("difficulty"));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
                 session.setLocation(location);

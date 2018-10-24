@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/session")
@@ -77,10 +79,13 @@ public class SessionController {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
         int status = sessionService.register(enrollment.getUserId(), enrollment.getSessionId());
+        Map<String, Integer> retObj = new HashMap<>(1);
+        int enrollments = sessionService.getEnrollments(enrollment.getSessionId());
+        retObj.put("enrollments", enrollments);
         if(status == 0){
-            return new Result(status, Constants.REGISTERED);
+            return new Result(status, Constants.REGISTERED, retObj);
         }
-        return new Result(status, Constants.SUCCESS);
+        return new Result(status, Constants.SUCCESS, retObj);
     }
 
 //    @RequestMapping(value="/list", method = RequestMethod.GET)
