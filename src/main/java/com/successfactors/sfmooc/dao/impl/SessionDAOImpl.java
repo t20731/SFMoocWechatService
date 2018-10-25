@@ -13,6 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
@@ -25,6 +26,38 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int batchDelete(List<Integer> sessionIdList) {
+        if (CollectionUtils.isEmpty(sessionIdList)) {
+            return 0;
+        }
+        StringBuilder deleteUserSessionMap = new StringBuilder("delete from user_session_map where session_id in ");
+        StringBuilder deleteSession = new StringBuilder("delete from session where id in ");
+        String whereClause = generateWhereClause(sessionIdList);
+        deleteUserSessionMap.append(whereClause);
+        Object[] params = sessionIdList.toArray(new Object[]{sessionIdList.size()});
+        int userSessionCount = jdbcTemplate.update(deleteUserSessionMap.toString(), params);
+        logger.info("deleteUserSessionMap sql is : " + deleteUserSessionMap);
+        logger.info("delete  " + userSessionCount + " records in user_session_map table");
+        deleteSession.append(whereClause);
+        logger.info("deleteSession sql is : " + deleteSession);
+        int sessionCount = jdbcTemplate.update(deleteSession.toString(), params);
+        logger.info("delete  " + sessionCount + " records in session table");
+        return sessionCount;
+    }
+
+    private String generateWhereClause(List<Integer> idList) {
+        StringBuilder whereClause = new StringBuilder();
+        whereClause.append("(");
+        int size = idList.size();
+        for (int i = 0; i < size; i++) {
+            whereClause.append(i != size - 1 ? "?, " : "?");
+        }
+        whereClause.append(")");
+        return whereClause.toString();
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -109,19 +142,37 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int editSession(Session session) {
-        String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location_id, " +
-                "direction_id, difficulty, status, created_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String created_date = DateUtil.formatDateTime(new Date());
-        int status = jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
-                session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
-                session.getDirection().getId(), session.getDifficulty(), 0, created_date});
-        return status;
+        String now = DateUtil.formatDateTime(new Date());
+        Integer sessionId = session.getId();
+        if (sessionId != null) {
+            String updateSql = "update session set topic = ?, description = ?, start_date = ?, end_date = ?, " +
+                    "location_id = ?, direction_id = ?, difficulty = ?, last_modified_date = ? where id = ?";
+            return jdbcTemplate.update(updateSql, new Object[]{session.getTopic(), session.getDescription(),
+                    session.getStartDate(), session.getEndDate(), session.getLocation().getId(), session.getDirection().getId(),
+                    session.getDifficulty(), now, session.getId()});
+        } else {
+            String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location_id, " +
+                    "direction_id, difficulty, status, created_date, last_modified_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
+                    session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
+                    session.getDirection().getId(), session.getDifficulty(), 0, now, now});
+        }
+    }
+
+    @Override
+    public int cancel(Integer sessionId) {
+        return jdbcTemplate.update("update session set status = ? where id = ?", new Object[]{-1, sessionId});
+    }
+
+    @Override
+    public int start(Integer sessionId) {
+        return jdbcTemplate.update("update session set status = ? where id = ?", new Object[]{1, sessionId});
     }
 
     @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
         String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, l.name as location, s2.direction_id, d.image_src, s2.status, " +
-                "s2.created_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
+                "s2.last_modified_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
                 "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
                 "on s1.id = usmap.session_id) a group by a.id) b " +
                 " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and s2.id = b.id ";
@@ -180,7 +231,7 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setTopic(resultSet.getString("topic"));
                 session.setDifficulty(resultSet.getInt("difficulty"));
                 session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
-                session.setCreatedDate(DateUtil.formatDateToSecond(resultSet.getString("created_date")));
+                session.setLastModifiedDate(DateUtil.formatDateToSecond(resultSet.getString("last_modified_date")));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
                 session.setLocation(location);

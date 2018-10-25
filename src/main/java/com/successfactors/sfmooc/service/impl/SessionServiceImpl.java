@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.service.impl;
 
+import com.successfactors.sfmooc.dao.CheckinDAO;
 import com.successfactors.sfmooc.dao.SessionDAO;
 import com.successfactors.sfmooc.domain.FetchParams;
 import com.successfactors.sfmooc.domain.Session;
@@ -21,6 +22,9 @@ public class SessionServiceImpl implements SessionService {
 
     @Autowired
     private SessionDAO sessionDAO;
+
+    @Autowired
+    private CheckinDAO checkinDAO;
 
     @Override
     public int register(String userId, Integer sessionId) {
@@ -45,6 +49,21 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public int getEnrollments(Integer sessionId) {
         return sessionDAO.getEnrollments(sessionId);
+    }
+
+    @Override
+    public int batchDelete(List<Integer> sessionIdList) {
+        return sessionDAO.batchDelete(sessionIdList);
+    }
+
+    @Override
+    public int cancel(Integer sessionId) {
+        return sessionDAO.cancel(sessionId);
+    }
+
+    @Override
+    public String start(Integer sessionId) {
+        return null;
     }
 
     //    public List<Session> getSessionList() {

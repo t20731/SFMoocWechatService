@@ -14,6 +14,9 @@ public interface SessionService {
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
     int getEnrollments(Integer sessionId);
+    int batchDelete(List<Integer> sessionIdList);
+    int cancel(Integer sessionId);
+    String start(Integer sessionId);
 //    Session getSessionByDate(String date);
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);

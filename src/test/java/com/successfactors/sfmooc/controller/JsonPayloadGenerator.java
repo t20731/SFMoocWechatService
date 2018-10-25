@@ -6,10 +6,20 @@ import com.successfactors.sfmooc.utils.DateUtil;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class JsonPayloadGenerator {
+
+    @Test
+    public void generateIdList(){
+        List<Integer> idList = new ArrayList<>();
+        idList.add(1001);
+        idList.add(1002);
+        generateJsonPayload(idList);
+    }
 
     @Test
     public void generateSession(){

@@ -8,7 +8,7 @@ public class Constants {
     public static Set<String> ORDER_FIELD_SET = new HashSet<>();
 
     static {
-        ORDER_FIELD_SET.add(Constants.CREATED_DATE);
+        ORDER_FIELD_SET.add(Constants.LAST_MODIFIED_DATE);
         ORDER_FIELD_SET.add(Constants.TOTAL_MEMBERS);
     }
 
@@ -26,7 +26,7 @@ public class Constants {
 
     public static final String REGISTERED = "registered";
 
-    public static final String CREATED_DATE = "created_date";
+    public static final String LAST_MODIFIED_DATE = "last_modified_date";
 
     public static final String TOTAL_MEMBERS = "total_members";
 

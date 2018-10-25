@@ -6,6 +6,7 @@ import com.successfactors.sfmooc.service.LocationService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,6 +93,25 @@ public class SessionController {
         }
         return new Result(status, Constants.SUCCESS, retObj);
     }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Result batchDelete(@RequestBody List<Integer> sessionIdList){
+        if(CollectionUtils.isEmpty(sessionIdList)){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = sessionService.batchDelete(sessionIdList);
+        return new Result(status, Constants.SUCCESS);
+    }
+
+    @RequestMapping(value = "/cancel/{id}", method = RequestMethod.GET)
+    public Result cancel(@PathVariable ("id") Integer id){
+        if(id == null || id == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = sessionService.cancel(id);
+        return new Result(status, Constants.SUCCESS);
+    }
+
 
 //    @RequestMapping(value="/list", method = RequestMethod.GET)
 //    public List<Session> getSessionList(){

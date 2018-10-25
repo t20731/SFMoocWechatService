@@ -13,6 +13,7 @@ public class Session {
     private int difficulty;
     private int status;
     private String createdDate;
+    private String lastModifiedDate;
 
     private int enrollments;
 
@@ -125,5 +126,13 @@ public class Session {
 
     public void setEnrollments(int enrollments) {
         this.enrollments = enrollments;
+    }
+
+    public String getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(String lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }
