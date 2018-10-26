@@ -24,7 +24,7 @@ public interface SessionDAO {
 //
 //    Session getSessionByOwner(String userId);
 //
-//    int updateCheckinCode(Integer sessionId, String checkinCode);
+    int updateCheckinCode(Integer sessionId, String checkinCode);
 //
 //    List<String> getAttendeeList();
 //

@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-//    @Autowired
-//    private CacheService cacheService;
+    @Autowired
+    private CacheService cacheService;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -19,7 +19,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        //cacheService.loadDataOnStartUp();
+        cacheService.loadDataOnStartUp();
     }
 }
 

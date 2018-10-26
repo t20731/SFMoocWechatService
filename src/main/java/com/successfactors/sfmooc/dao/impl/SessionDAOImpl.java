@@ -321,10 +321,10 @@ public class SessionDAOImpl implements SessionDAO {
 //        }
 //    }
 //
-//    @Override
-//    public int updateCheckinCode(Integer sessionId, String checkinCode) {
-//        return jdbcTemplate.update("update session set checkin_code = ? where id = ?", new Object[]{checkinCode, sessionId});
-//    }
+    @Override
+    public int updateCheckinCode(Integer sessionId, String checkinCode) {
+        return jdbcTemplate.update("update session set checkin_code = ? where id = ?", new Object[]{checkinCode, sessionId});
+    }
 //
 //    @Override
 //    public List<String> getAttendeeList() {

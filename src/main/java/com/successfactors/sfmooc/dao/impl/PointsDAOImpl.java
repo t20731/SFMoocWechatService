@@ -3,6 +3,7 @@ package com.successfactors.sfmooc.dao.impl;
 import com.successfactors.sfmooc.dao.PointsDAO;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
+import com.successfactors.sfmooc.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.List;
 
 @Repository
@@ -22,14 +24,14 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public List<RankingItem> getUserRankingList(String season){
-        String query = "select a.id, a.nickname, a.avatarUrl, a.initial_points + ifnull(b.session_points, 0)  as total_points " +
-                  "from  (select id, nickname, avatarUrl, initial as initial_points from user where status != 0) a " +
+        String query = "select a.id, a.nickname, a.avatarUrl, ifnull(b.session_points, 0)  as total_points " +
+                  "from  (select id, nickname, avatarUrl from user) a " +
                   "left outer join " +
-                  "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0))+sum(lottery) as session_points from points p, session s " +
-                  " where p.session_id = s.id and s.season = ? group by p.user_id) b " +
+                  "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0)) as session_points from points p, session s " +
+                  " where p.session_id = s.id group by p.user_id) b " +
                   "on a.id = b.user_id order by total_points desc";
 
-        return jdbcTemplate.query(query, new Object[]{season}, new RowMapper<RankingItem>() {
+        return jdbcTemplate.query(query, new RowMapper<RankingItem>() {
             @Override
             public RankingItem mapRow(ResultSet resultSet, int i) throws SQLException {
                 RankingItem rankingItem = new RankingItem();
@@ -45,17 +47,16 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public List<Points> getPointsDetailForUser(String userId) {
-        String query = "select date, checkin, host, exam, lottery from points p, session s " +
-                "where p.session_id = s.id and p.user_id = ? order by date desc";
+        String query = "select start_date, checkin, host, exam from points p, session s " +
+                "where p.session_id = s.id and p.user_id = ? order by start_date desc";
         return jdbcTemplate.query(query, new Object[]{userId}, new RowMapper<Points>() {
             @Override
             public Points mapRow(ResultSet resultSet, int i) throws SQLException {
                Points points = new Points();
-               points.setDate(resultSet.getString("date"));
+               points.setDate(DateUtil.formatToDate(resultSet.getString("start_date")));
                points.setCheckin(resultSet.getInt("checkin"));
                points.setHost(resultSet.getInt("host"));
                points.setExam(resultSet.getInt("exam"));
-               points.setLottery(resultSet.getInt("lottery"));
                return points;
             }
         });
@@ -108,14 +109,13 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public Points getPointsById(Integer sessionId, String userId){
-        List<Points> pointsList = jdbcTemplate.query("select user_id, session_id, bet_number, checkin, host, exam, lottery from points where session_id = ?" +
+        List<Points> pointsList = jdbcTemplate.query("select user_id, session_id, bet_number, checkin, host, exam from points where session_id = ?" +
                 " and user_id = ?", new Object[]{sessionId, userId}, new RowMapper<Points>() {
             @Override
             public Points mapRow(ResultSet resultSet, int i) throws SQLException {
                 Points point = new Points();
                 point.setUserId(resultSet.getString("user_id"));
                 point.setSessionId(resultSet.getInt("session_id"));
-                point.setBetNumber(resultSet.getInt("bet_number"));
                 point.setCheckin(resultSet.getInt("checkin"));
                 point.setHost(resultSet.getInt("host"));
                 Object exam = resultSet.getObject("exam");
@@ -124,7 +124,6 @@ public class PointsDAOImpl implements PointsDAO{
                 } else {
                     point.setExam((Integer) exam);
                 }
-                point.setLottery(resultSet.getInt("lottery"));
                 return point;
             }
         });

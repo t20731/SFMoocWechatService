@@ -3,11 +3,9 @@ package com.successfactors.sfmooc.domain;
 public class Points {
     private String userId;
     private Integer sessionId;
-    private Integer betNumber;
     private int checkin;
     private int host;
     private Integer exam;
-    private int lottery;
     private String date;
 
     public String getUserId() {
@@ -24,14 +22,6 @@ public class Points {
 
     public void setSessionId(Integer sessionId) {
         this.sessionId = sessionId;
-    }
-
-    public Integer getBetNumber() {
-        return betNumber;
-    }
-
-    public void setBetNumber(Integer betNumber) {
-        this.betNumber = betNumber;
     }
 
     public int getCheckin() {
@@ -56,14 +46,6 @@ public class Points {
 
     public void setExam(Integer exam) {
         this.exam = exam;
-    }
-
-    public int getLottery() {
-        return lottery;
-    }
-
-    public void setLottery(int lottery) {
-        this.lottery = lottery;
     }
 
     public String getDate() {

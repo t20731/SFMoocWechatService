@@ -36,4 +36,6 @@ public class Constants {
 
     public static final String TOTAL_MEMBERS = "total_members";
 
+    public static final int  MIN_MEMBERS = 1;
+
 }

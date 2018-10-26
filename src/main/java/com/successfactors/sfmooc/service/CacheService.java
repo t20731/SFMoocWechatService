@@ -28,10 +28,10 @@ public class CacheService {
     @Autowired
     private CheckinDAO checkinDAO;
 
-//    public void loadDataOnStartUp(){
-//        initializeSessionCache();
-//        initializeCodeCache();
-//    }
+    public void loadDataOnStartUp(){
+        //initializeSessionCache();
+        initializeCodeCache();
+    }
 //
 //    private void initializeSessionCache() {
 //        try {
@@ -50,18 +50,18 @@ public class CacheService {
 //        }
 //    }
 //
-//    private void initializeCodeCache() {
-//        try {
-//            logger.info("Start to load code into cache...");
-//            Map<Integer, String> codeMap = checkinDAO.getAllCodes();
-//            if (codeMap != null && !codeMap.isEmpty()) {
-//                checkinCodeCache.putAll(codeMap);
-//            }
-//            logger.info("Load "+checkinCodeCache.size()+" codes into cache");
-//        } catch (Exception e) {
-//            logger.error("Fail to load code to cache", e);
-//        }
-//    }
+    private void initializeCodeCache() {
+        try {
+            logger.info("Start to load code into cache...");
+            Map<Integer, String> codeMap = checkinDAO.getAllCodes();
+            if (codeMap != null && !codeMap.isEmpty()) {
+                checkinCodeCache.putAll(codeMap);
+            }
+            logger.info("Load "+checkinCodeCache.size()+" codes into cache");
+        } catch (Exception e) {
+            logger.error("Fail to load code to cache", e);
+        }
+    }
 //
 //    public  Map<String, Session> getUserToSessionCache() {
 //        return userToSessionCache;
@@ -71,9 +71,9 @@ public class CacheService {
 //        return sessionCache;
 //    }
 //
-//    public Map<Integer, String> getCheckinCodeCache() {
-//        return checkinCodeCache;
-//    }
+    public Map<Integer, String> getCheckinCodeCache() {
+        return checkinCodeCache;
+    }
 //
 //    public Session getSessionFromCacheById(Integer sessionId){
 //        return sessionCache.get(sessionId);

@@ -112,6 +112,22 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS);
     }
 
+    @RequestMapping(value = "/start/{userId}/{sessionId}", method = RequestMethod.GET)
+    public Result start(@PathVariable ("userId") String userId, @PathVariable ("sessionId") Integer sessionId){
+        if(userId == null || sessionId == null || sessionId == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int enrollments = sessionService.getEnrollments(sessionId);
+        if(enrollments < Constants.MIN_MEMBERS){
+            return new Result(-1, Constants.NOT_AUTHORIZED);
+        }
+        String checkInCode = sessionService.start(userId, sessionId);
+        Map<String, Object> retObj = new HashMap<>(1);
+        retObj.put("CheckInCode", checkInCode);
+        return new Result(1, Constants.SUCCESS, retObj);
+    }
+
+
 
 //    @RequestMapping(value="/list", method = RequestMethod.GET)
 //    public List<Session> getSessionList(){

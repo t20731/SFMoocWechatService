@@ -7,12 +7,16 @@ import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.domain.SessionVO;
 import com.successfactors.sfmooc.domain.UserSession;
 import com.successfactors.sfmooc.service.CacheService;
+import com.successfactors.sfmooc.service.CheckinService;
+import com.successfactors.sfmooc.service.RankingService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -21,10 +25,10 @@ public class SessionServiceImpl implements SessionService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private SessionDAO sessionDAO;
+    private CheckinService checkinService;
 
     @Autowired
-    private CheckinDAO checkinDAO;
+    private SessionDAO sessionDAO;
 
     @Override
     public int register(String userId, Integer sessionId) {
@@ -62,8 +66,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public String start(Integer sessionId) {
-        return null;
+    public String start(String userId, Integer sessionId) {
+        String checkInCode = checkinService.generateCheckinCode();
+        logger.info("CheckIn code: " + checkInCode);
+        checkinService.confirmCheckinCode(sessionId, checkInCode, userId);
+        return checkInCode;
     }
 
     //    public List<Session> getSessionList() {

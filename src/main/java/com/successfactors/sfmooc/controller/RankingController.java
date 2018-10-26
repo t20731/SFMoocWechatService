@@ -34,26 +34,23 @@ public class RankingController {
     @Autowired
     private UserService userService;
 
-//    @RequestMapping(value="/list", method = RequestMethod.GET)
-//    public List<RankingItem> getRankingList(){
-//        String season = sessionService.getCurrentSeason();
-//        logger.info("Current season: " + season);
-//        return rankingService.getRankingListBySeason(season);
-//    }
-//
-//    @RequestMapping(value="/points/{userId}", method = RequestMethod.GET)
-//    public Result getPointsDetailForUser(@PathVariable("userId") String userId){
-//        if(StringUtils.isEmpty(userId)){
-//            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
-//        }
-//        User user = userService.getUserById(userId);
-//        if(user != null){
-//            int initialPoints = user.getInitialPoints();
-//            List<Points> pointsList = rankingService.getPointsDetailForUser(userId);
-//            return new Result(initialPoints, Constants.SUCCESS, pointsList);
-//        }
-//        return new Result(-1, Constants.NOT_AUTHORIZED);
-//    }
+    @RequestMapping(value="/list", method = RequestMethod.GET)
+    public List<RankingItem> getRankingList(){
+        return rankingService.getRankingListBySeason("S1");
+    }
+
+    @RequestMapping(value="/points/{userId}", method = RequestMethod.GET)
+    public Result getPointsDetailForUser(@PathVariable("userId") String userId){
+        if(StringUtils.isEmpty(userId)){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        User user = userService.getUserById(userId);
+        if(user != null){
+            List<Points> pointsList = rankingService.getPointsDetailForUser(userId);
+            return new Result(0, Constants.SUCCESS, pointsList);
+        }
+        return new Result(-1, Constants.NOT_AUTHORIZED);
+    }
 
 
 }
