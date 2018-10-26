@@ -171,7 +171,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
-        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, l.name as location, s2.direction_id, d.image_src, s2.status, " +
+        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, l.name as location, s2.direction_id, d.image_src, s2.status, s2.created_date, " +
                 "s2.last_modified_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
                 "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
                 "on s1.id = usmap.session_id) a group by a.id) b " +
@@ -212,9 +212,16 @@ public class SessionDAOImpl implements SessionDAO {
         sb.append("order by ");
         String orderField = fetchParams.getOrderField();
         if (!StringUtils.isEmpty(orderField) && Constants.ORDER_FIELD_SET.contains(orderField)) {
-            sb.append(orderField).append(" desc").append(", ");
+            sb.append(orderField).append(" ");
+            String order = fetchParams.getOrder();
+            if (!StringUtils.isEmpty(order)) {
+                sb.append(order);
+            } else {
+                sb.append("desc");
+            }
+            sb.append(",");
         }
-        sb.append("sid desc limit ?, ?");
+        sb.append(" sid desc limit ?, ?");
         params.add(fetchParams.getStartPage());
         params.add(fetchParams.getPageSize());
         Object[] paramsArray = new Object[params.size()];
@@ -231,6 +238,7 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setTopic(resultSet.getString("topic"));
                 session.setDifficulty(resultSet.getInt("difficulty"));
                 session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
+                session.setCreatedDate(DateUtil.formatDateToMinutes(resultSet.getString("created_date")));
                 session.setLastModifiedDate(DateUtil.formatDateToSecond(resultSet.getString("last_modified_date")));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));

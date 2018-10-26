@@ -5,6 +5,7 @@ public class FetchParams {
     private int pageSize;
     private int directionId;
     private String orderField;
+    private String order;
     private String keyWord;
     private int difficulty = -1;
     private String ownerId;
@@ -45,6 +46,14 @@ public class FetchParams {
 
     public void setOrderField(String orderField) {
         this.orderField = orderField;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
     }
 
     public String getKeyWord() {
