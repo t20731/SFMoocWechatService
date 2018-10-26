@@ -26,6 +26,13 @@ public class DateUtil {
         return dateStr;
     }
 
+    public static String formatToDate(String dateStr){
+        if(!StringUtils.isEmpty(dateStr) && dateStr.length() >= 21){
+            return dateStr.substring(0, 10);
+        }
+        return dateStr;
+    }
+
     public static String formatDateToSecond(String dateStr){
         if(!StringUtils.isEmpty(dateStr) && dateStr.length() >= 21){
             return dateStr.substring(0, dateStr.length() - 2);

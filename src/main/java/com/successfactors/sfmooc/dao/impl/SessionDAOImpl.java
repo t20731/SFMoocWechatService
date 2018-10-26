@@ -221,7 +221,7 @@ public class SessionDAOImpl implements SessionDAO {
             }
             sb.append(",");
         }
-        sb.append(" sid desc limit ?, ?");
+        sb.append(" start_date asc limit ?, ?");
         params.add(fetchParams.getStartPage());
         params.add(fetchParams.getPageSize());
         Object[] paramsArray = new Object[params.size()];
@@ -237,8 +237,8 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setId(resultSet.getInt("sid"));
                 session.setTopic(resultSet.getString("topic"));
                 session.setDifficulty(resultSet.getInt("difficulty"));
-                session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
-                session.setCreatedDate(DateUtil.formatDateToMinutes(resultSet.getString("created_date")));
+                session.setStartDate(DateUtil.formatToDate(resultSet.getString("start_date")));
+                session.setCreatedDate(DateUtil.formatDateToSecond(resultSet.getString("created_date")));
                 session.setLastModifiedDate(DateUtil.formatDateToSecond(resultSet.getString("last_modified_date")));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
