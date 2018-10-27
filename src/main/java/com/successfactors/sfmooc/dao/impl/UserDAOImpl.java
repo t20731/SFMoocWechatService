@@ -38,11 +38,14 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User getUserById(String userId) {
-        String query = "select status from user where id = ?";
+        String query = "select id, nickname, avatarUrl, status from user where id = ?";
         List<User> users = jdbcTemplate.query(query, new Object[]{userId}, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet resultSet, int i) throws SQLException {
                 User user = new User();
+                user.setId(resultSet.getString("id"));
+                user.setNickName(resultSet.getString("nickname"));
+                user.setAvatarUrl(resultSet.getString("avatarUrl"));
                 user.setStatus(resultSet.getInt("status"));
                 return user;
             }

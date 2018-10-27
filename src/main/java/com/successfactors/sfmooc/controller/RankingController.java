@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ranking")
@@ -46,8 +48,11 @@ public class RankingController {
         }
         User user = userService.getUserById(userId);
         if(user != null){
+            Map<String, Object> retObj = new HashMap<>();
+            retObj.put("user", user);
             List<Points> pointsList = rankingService.getPointsDetailForUser(userId);
-            return new Result(0, Constants.SUCCESS, pointsList);
+            retObj.put("pointsList", pointsList);
+            return new Result(1, Constants.SUCCESS, retObj);
         }
         return new Result(-1, Constants.NOT_AUTHORIZED);
     }
