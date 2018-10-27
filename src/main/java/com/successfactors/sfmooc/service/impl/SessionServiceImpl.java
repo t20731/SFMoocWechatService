@@ -73,6 +73,11 @@ public class SessionServiceImpl implements SessionService {
         return checkInCode;
     }
 
+    @Override
+    public String getCheckInCode(Integer sessionId) {
+        return sessionDAO.getCheckInCode(sessionId);
+    }
+
     //    public List<Session> getSessionList() {
 //       // List<Session> sessionList = (List<Session>) cacheService.getSessionCache().values();
 //        String season = getCurrentSeason();

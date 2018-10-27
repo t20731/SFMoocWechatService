@@ -17,6 +17,7 @@ public interface SessionDAO {
     int batchDelete(List<Integer> sessionIdList);
     int cancel(Integer sessionId);
     int start(Integer sessionId);
+    String getCheckInCode(Integer sessionId);
 
 //    List<Session> getSessionList(String season);
 //

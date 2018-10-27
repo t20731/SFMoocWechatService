@@ -17,6 +17,7 @@ public interface SessionService {
     int batchDelete(List<Integer> sessionIdList);
     int cancel(Integer sessionId);
     String start(String userId, Integer sessionId);
+    String getCheckInCode(Integer sessionId);
 //    Session getSessionByDate(String date);
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);

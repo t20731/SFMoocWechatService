@@ -140,6 +140,18 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
+    public String getCheckInCode(Integer sessionId) {
+        return jdbcTemplate.queryForObject("select checkin_code from session where id = ?",
+                new Object[]{sessionId}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getString("checkin_code");
+            }
+        });
+    }
+
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int editSession(Session session) {
         String now = DateUtil.formatDateTime(new Date());
