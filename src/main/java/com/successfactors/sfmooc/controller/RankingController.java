@@ -57,5 +57,5 @@ public class RankingController {
         return new Result(-1, Constants.NOT_AUTHORIZED);
     }
 
-
+    
 }

@@ -3,9 +3,18 @@ package com.successfactors.sfmooc.domain;
 import java.util.Map;
 
 public class Answer {
+    private Integer sessionId;
     private String userId;
     private int points;
     private Map<Integer, String> answerMap;
+
+    public Integer getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Integer sessionId) {
+        this.sessionId = sessionId;
+    }
 
     public int getPoints() {
         return points;

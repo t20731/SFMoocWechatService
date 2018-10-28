@@ -338,18 +338,16 @@ public class SessionDAOImpl implements SessionDAO {
         return jdbcTemplate.update("update session set checkin_code = ? where id = ?", new Object[]{checkinCode, sessionId});
     }
 //
-//    @Override
-//    public List<String> getAttendeeList() {
-//        String today = DateUtil.formatDate(new Date());
-//        String query = "select user_id from points where (checkin > 0 or host > 0) and session_id in (select id from session" +
-//                " where date = ?)";
-//        return jdbcTemplate.query(query, new Object[]{today}, new RowMapper<String>() {
-//            @Override
-//            public String mapRow(ResultSet resultSet, int i) throws SQLException {
-//                return resultSet.getString("user_id");
-//            }
-//        });
-//    }
+    @Override
+    public List<String> getAttendeeList(Integer sessionId) {
+        String query = "select user_id from points where checkin > 0 and session_id = ?";
+        return jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getString("user_id");
+            }
+        });
+    }
 //
 //    @Override
 //    public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {

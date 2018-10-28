@@ -29,8 +29,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public int deleteQuestion(Integer sessionId, Integer questionId) {
-        return questionDAO.deleteQuestion(sessionId, questionId);
+    public int deleteQuestion(Integer questionId) {
+        return questionDAO.deleteQuestion(questionId);
     }
 
     @Override

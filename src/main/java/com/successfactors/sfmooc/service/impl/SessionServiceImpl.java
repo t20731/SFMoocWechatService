@@ -146,14 +146,14 @@ public class SessionServiceImpl implements SessionService {
 //        return false;
 //    }
 //
-//    @Override
-//    public Set<String> getAttendeeList() {
-//        List<String> userList = sessionDAO.getAttendeeList();
-//        if(userList != null){
-//            return new LinkedHashSet<>(userList);
-//        }
-//        return null;
-//    }
+    @Override
+    public Set<String> getAttendeeList(Integer sessionId) {
+        List<String> userList = sessionDAO.getAttendeeList(sessionId);
+        if(userList != null){
+            return new LinkedHashSet<>(userList);
+        }
+        return null;
+    }
 //
 //    @Override
 //    public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {

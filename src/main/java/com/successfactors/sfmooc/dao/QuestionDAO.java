@@ -8,6 +8,6 @@ public interface QuestionDAO {
 
     int editQuestion(Question question);
     List<Question> loadQuestions(Integer sessionId, Integer status);
-    int deleteQuestion(Integer sessionId, Integer questionId);
+    int deleteQuestion(Integer questionId);
     int publish(Integer sessionId);
 }

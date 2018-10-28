@@ -53,13 +53,13 @@ public class QuestionDAOImpl implements QuestionDAO {
     public List<Question> loadQuestions(Integer sessionId, Integer status) {
         String today = DateUtil.formatDate(new Date());
         Map<Integer, Question> questionMap = new LinkedHashMap<>();
-        String query = "select s.date, q.id as qid, q.content as q_content, o.id as oid, o.number, o.content as o_content, o.is_answer " +
+        String query = "select s.start_date, q.id as qid, q.content as q_content, o.id as oid, o.number, o.content as o_content, o.is_answer " +
                 "from session s, question q, `option` o where s.id = q.session_id and " +
                 "q.id = o.question_id and s.id = ? and s.question_status = ? order by q.id, o.number";
         jdbcTemplate.query(query, new Object[]{sessionId, status}, new RowMapper<Question>() {
             @Override
             public Question mapRow(ResultSet resultSet, int i) throws SQLException {
-                String sessionDate = resultSet.getString("date");
+                String sessionDate = DateUtil.formatToDate(resultSet.getString("start_date"));
                 Integer questionId = resultSet.getInt("qid");
                 Question question = questionMap.get(questionId);
                 if (question == null) {
@@ -92,13 +92,13 @@ public class QuestionDAOImpl implements QuestionDAO {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int deleteQuestion(Integer sessionId, Integer questionId) {
+    public int deleteQuestion(Integer questionId) {
         logger.info("Start to delete question: " + questionId);
         String deleteOptionSql = "delete from `option` where question_id = ?";
         int optionCount = jdbcTemplate.update(deleteOptionSql, questionId);
         logger.info("delete " + optionCount + " records in option table");
-        String deleteQuestionSql = "delete from question where session_id = ? and id = ? and status = 0";
-        int questionCount = jdbcTemplate.update(deleteQuestionSql, new Object[]{sessionId, questionId});
+        String deleteQuestionSql = "delete from question where id = ? and status = 0";
+        int questionCount = jdbcTemplate.update(deleteQuestionSql, new Object[]{questionId});
         logger.info("delete  " + questionCount + " records in question table");
         return questionCount;
     }

@@ -22,7 +22,7 @@ public interface SessionService {
 //    Session getSessionByOwner(String owner);
 //    int updateCheckinCode(Integer sessionId, String checkinCode);
 //    boolean isSessionOwnerOfToday(String userId);
-//    Set<String> getAttendeeList();
+    Set<String> getAttendeeList(Integer sessionId);
 //    int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
 //    List<SessionVO> loadHistorySessions();
 //    String getCurrentSeason();

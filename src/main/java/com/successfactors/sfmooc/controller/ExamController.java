@@ -29,47 +29,39 @@ public class ExamController {
     @Autowired
     private ExamService examService;
 
-//    @RequestMapping(value = "/load/question/{sessionId}", method = RequestMethod.GET)
-//    public Result loadQuestionsBySession(@PathVariable("sessionId") Integer sessionId) {
-//        if (StringUtils.isEmpty(sessionId)) {
-//            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
-//        }
-//        List<Question> questionList = questionService.loadQuestions(sessionId, 1);
-//        return new Result(0, Constants.SUCCESS, questionList);
-//    }
-//
+    @RequestMapping(value = "/load/question/{sessionId}", method = RequestMethod.GET)
+    public Result loadQuestionsBySession(@PathVariable("sessionId") Integer sessionId) {
+        if (sessionId == null || sessionId <= 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        List<Question> questionList = questionService.loadQuestions(sessionId, 1);
+        return new Result(0, Constants.SUCCESS, questionList);
+    }
+
 //    @RequestMapping(value = "/load/session", method = RequestMethod.GET)
 //    public Result loadHistorySessions() {
 //        List<SessionVO> sessions = sessionService.loadHistorySessions();
 //        return new Result(0, Constants.SUCCESS, sessions);
 //    }
-//
-//    @RequestMapping(value = "/submit", method = RequestMethod.POST)
-//    public Result submitAnswers(@RequestBody Answer answer) {
-//        if (answer == null || StringUtils.isEmpty(answer.getUserId())
-//                || CollectionUtils.isEmpty(answer.getAnswerMap())) {
-//            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
-//        }
-//        String today = DateUtil.formatDate(new Date());
-//        Session session = sessionService.getSessionByDate(today);
-//        if (session != null) {
-//            if (!session.getOwner().equals(answer.getUserId())) {
-//                Set<String> attendList = sessionService.getAttendeeList();
-//                if (attendList != null && attendList.contains(answer.getUserId())) {
-//                    Answer result = examService.submitAnswers(session.getSessionId(), answer);
-//                    if (result != null) {
-//                        return new Result(0, Constants.SUCCESS, result);
-//                    } else {
-//                        return new Result(-1, "submitted");
-//                    }
-//                } else {
-//                    return new Result(-2, Constants.NOT_AUTHORIZED);
-//                }
-//            } else {
-//                return new Result(-1, Constants.NOT_AUTHORIZED);
-//            }
-//        }
-//        return new Result(-3, Constants.NOT_AUTHORIZED);
-//    }
+
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    public Result submitAnswers(@RequestBody Answer answer) {
+        if (answer == null || StringUtils.isEmpty(answer.getUserId())
+                || CollectionUtils.isEmpty(answer.getAnswerMap())) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        Integer sessionId = answer.getSessionId();
+        Set<String> attendList = sessionService.getAttendeeList(sessionId);
+        if (attendList != null && attendList.contains(answer.getUserId())) {
+            Answer result = examService.submitAnswers(sessionId, answer);
+            if (result != null) {
+                return new Result(0, Constants.SUCCESS, result);
+            } else {
+                return new Result(-1, "submitted");
+            }
+        } else {
+            return new Result(-2, Constants.NOT_AUTHORIZED);
+        }
+    }
 
 }
