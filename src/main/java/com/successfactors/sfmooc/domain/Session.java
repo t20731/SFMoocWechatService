@@ -14,6 +14,7 @@ public class Session {
     private int status;
     private String createdDate;
     private String lastModifiedDate;
+    private String checkInCode;
 
     private int enrollments;
 
@@ -134,5 +135,13 @@ public class Session {
 
     public void setLastModifiedDate(String lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public String getCheckInCode() {
+        return checkInCode;
+    }
+
+    public void setCheckInCode(String checkInCode) {
+        this.checkInCode = checkInCode;
     }
 }

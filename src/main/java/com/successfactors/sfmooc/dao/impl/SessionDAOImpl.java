@@ -96,7 +96,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public UserSession getSessionById(Integer sessionId, String userId) {
-        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, l.name as location, s.status, " +
+        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.checkin_code, l.name as location, s.status, " +
                 "u.id as uid, u.nickname, u.avatarUrl from user u, location l, session s where s.owner = u.id and s.location_id = l.id and s.id = ? ";
         List<Session> sessions = jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<Session>() {
             @Nullable
@@ -117,6 +117,9 @@ public class SessionDAOImpl implements SessionDAO {
                 user.setNickName(resultSet.getString("nickname"));
                 user.setAvatarUrl(resultSet.getString("avatarUrl"));
                 session.setOwner(user);
+                if(user.getId() != null && user.getId().equalsIgnoreCase(userId)){
+                    session.setCheckInCode(resultSet.getString("checkin_code"));
+                }
                 return session;
             }
         });
@@ -249,7 +252,7 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setId(resultSet.getInt("sid"));
                 session.setTopic(resultSet.getString("topic"));
                 session.setDifficulty(resultSet.getInt("difficulty"));
-                session.setStartDate(DateUtil.formatToDate(resultSet.getString("start_date")));
+                session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
                 session.setCreatedDate(DateUtil.formatDateToSecond(resultSet.getString("created_date")));
                 session.setLastModifiedDate(DateUtil.formatDateToSecond(resultSet.getString("last_modified_date")));
                 Location location = new Location();
