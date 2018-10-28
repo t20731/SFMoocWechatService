@@ -15,6 +15,7 @@ public class Session {
     private String createdDate;
     private String lastModifiedDate;
     private String checkInCode;
+    private Integer questionStatus;
 
     private int enrollments;
 
@@ -143,5 +144,13 @@ public class Session {
 
     public void setCheckInCode(String checkInCode) {
         this.checkInCode = checkInCode;
+    }
+
+    public Integer getQuestionStatus() {
+        return questionStatus;
+    }
+
+    public void setQuestionStatus(Integer questionStatus) {
+        this.questionStatus = questionStatus;
     }
 }

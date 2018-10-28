@@ -96,8 +96,10 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public UserSession getSessionById(Integer sessionId, String userId) {
-        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.checkin_code, l.name as location, s.status, " +
-                "u.id as uid, u.nickname, u.avatarUrl from user u, location l, session s where s.owner = u.id and s.location_id = l.id and s.id = ? ";
+        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.checkin_code, s.question_status, "+
+                "d.name as direction, l.name as location, s.status, " +
+                "u.id as uid, u.nickname, u.avatarUrl from user u, direction d, location l, session s where s.owner = u.id " +
+                "and s.direction_id = d.id and s.location_id = l.id and s.id = ? ";
         List<Session> sessions = jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<Session>() {
             @Nullable
             @Override
@@ -111,6 +113,9 @@ public class SessionDAOImpl implements SessionDAO {
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
                 session.setLocation(location);
+                Direction direction = new Direction();
+                direction.setName(resultSet.getString("direction"));
+                session.setDirection(direction);
                 session.setStatus(resultSet.getInt("status"));
                 User user = new User();
                 user.setId(resultSet.getString("uid"));
@@ -120,6 +125,7 @@ public class SessionDAOImpl implements SessionDAO {
                 if(user.getId() != null && user.getId().equalsIgnoreCase(userId)){
                     session.setCheckInCode(resultSet.getString("checkin_code"));
                 }
+                session.setQuestionStatus(resultSet.getInt("question_status"));
                 return session;
             }
         });
