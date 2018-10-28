@@ -74,6 +74,8 @@ public class SessionController {
         if (session == null) {
             return new Result(0, Constants.NO_DATA);
         } else {
+            int enrollments = sessionService.getEnrollments(enrollment.getSessionId());
+            session.getSession().setEnrollments(enrollments);
             return new Result(1, Constants.SUCCESS, session);
         }
     }
