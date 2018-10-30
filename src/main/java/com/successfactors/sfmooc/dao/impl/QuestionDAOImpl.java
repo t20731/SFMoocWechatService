@@ -51,15 +51,21 @@ public class QuestionDAOImpl implements QuestionDAO {
 
     @Override
     public List<Question> loadQuestions(Integer sessionId, Integer status) {
-        String today = DateUtil.formatDate(new Date());
         Map<Integer, Question> questionMap = new LinkedHashMap<>();
-        String query = "select s.start_date, q.id as qid, q.content as q_content, o.id as oid, o.number, o.content as o_content, o.is_answer " +
+        StringBuilder query = new StringBuilder("select s.start_date, q.id as qid, q.content as q_content, o.id as oid, o.number, o.content as o_content, o.is_answer " +
                 "from session s, question q, `option` o where s.id = q.session_id and " +
-                "q.id = o.question_id and s.id = ? and s.question_status = ? order by q.id, o.number";
-        jdbcTemplate.query(query, new Object[]{sessionId, status}, new RowMapper<Question>() {
+                "q.id = o.question_id and s.id = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(sessionId);
+        if(status == 1){
+            query.append("and s.question_status = ? ");
+            params.add(status);
+        }
+        query.append("order by q.id, o.number");
+        logger.info("load questions sql: " + query.toString());
+        jdbcTemplate.query(query.toString(), params.toArray(), new RowMapper<Question>() {
             @Override
             public Question mapRow(ResultSet resultSet, int i) throws SQLException {
-                String sessionDate = DateUtil.formatToDate(resultSet.getString("start_date"));
                 Integer questionId = resultSet.getInt("qid");
                 Question question = questionMap.get(questionId);
                 if (question == null) {
@@ -80,7 +86,7 @@ public class QuestionDAOImpl implements QuestionDAO {
                 option.setQuestionId(questionId);
                 option.setNumber(resultSet.getString("number"));
                 option.setContent(resultSet.getString("o_content"));
-                if(status == 0 || !today.equals(sessionDate)){
+                if(status == 0){
                     option.setIsAnswer(resultSet.getInt("is_answer"));
                 }
                 options.add(option);

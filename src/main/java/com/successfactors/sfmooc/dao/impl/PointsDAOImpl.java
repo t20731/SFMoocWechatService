@@ -109,7 +109,7 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public Points getPointsById(Integer sessionId, String userId){
-        List<Points> pointsList = jdbcTemplate.query("select user_id, session_id, bet_number, checkin, host, exam from points where session_id = ?" +
+        List<Points> pointsList = jdbcTemplate.query("select user_id, session_id, checkin, host, exam from points where session_id = ?" +
                 " and user_id = ?", new Object[]{sessionId, userId}, new RowMapper<Points>() {
             @Override
             public Points mapRow(ResultSet resultSet, int i) throws SQLException {
