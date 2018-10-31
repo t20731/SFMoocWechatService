@@ -51,6 +51,15 @@ public class RankingController {
             Map<String, Object> retObj = new HashMap<>();
             retObj.put("user", user);
             List<Points> pointsList = rankingService.getPointsDetailForUser(userId);
+            int totalPoints = 0;
+            if(pointsList != null){
+                for(Points points : pointsList){
+                    totalPoints += points.getCheckin();
+                    totalPoints += points.getHost();
+                    totalPoints += points.getExam();
+                }
+            }
+            retObj.put("totalPoints", totalPoints);
             retObj.put("pointsList", pointsList);
             return new Result(1, Constants.SUCCESS, retObj);
         }

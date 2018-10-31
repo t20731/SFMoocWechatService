@@ -38,4 +38,9 @@ public class RankingServiceImpl implements RankingService{
     public int updatePointsForLottery(Integer sessionId, Integer luckyNumber) {
         return pointsDAO.updatePointsForLottery(sessionId, luckyNumber);
     }
+
+    @Override
+    public int getTotalPoints(String userId) {
+        return pointsDAO.getTotalPoints(userId);
+    }
 }

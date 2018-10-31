@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.util.List;
 
 @Repository
@@ -21,6 +20,18 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public int getTotalPoints(String userId) {
+        String query = "select sum(checkin)+sum(host)+sum(ifnull(exam,0)) as total_points from points p, session s " +
+                " where p.session_id = s.id and p.user_id = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{userId}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("total_points");
+            }
+        });
+    }
 
     @Override
     public List<RankingItem> getUserRankingList(String season){

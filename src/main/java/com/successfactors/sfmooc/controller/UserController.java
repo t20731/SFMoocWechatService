@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.controller;
 
 import com.successfactors.sfmooc.domain.Result;
 import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.service.RankingService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.service.UserService;
 import com.successfactors.sfmooc.utils.Constants;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private RankingService rankingService;
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Result addUser(@RequestBody User user) {
@@ -59,5 +63,13 @@ public class UserController {
         return new Result(-1, Constants.ERROR);
     }
 
+    @RequestMapping(value = "/totalPoints/{id}", method = RequestMethod.GET)
+    public Result getTotalPoints(@PathVariable("id") String id) {
+        if (StringUtils.isEmpty(id)) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int totalPoints = rankingService.getTotalPoints(id);
+        return new Result(0, Constants.SUCCESS, totalPoints);
+    }
 
 }

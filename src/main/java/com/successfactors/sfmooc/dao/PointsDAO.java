@@ -13,4 +13,5 @@ public interface PointsDAO {
     int updatePointsForCheckin(Integer sessionId, String userId);
     int updatePointsForLottery(Integer sessionId, Integer luckyNumber);
     int updatePointsForExam(Integer sessionId, String userId, int points);
+    int getTotalPoints(String userId);
 }

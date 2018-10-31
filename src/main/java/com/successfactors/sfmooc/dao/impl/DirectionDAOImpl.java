@@ -20,7 +20,7 @@ public class DirectionDAOImpl implements DirectionDAO {
 
     @Override
     public List<Direction> getAll() {
-        List<Direction> directions = jdbcTemplate.query("select id, name from direction", new RowMapper<Direction>() {
+        List<Direction> directions = jdbcTemplate.query("select id, name from direction order by id asc", new RowMapper<Direction>() {
             @Nullable
             @Override
             public Direction mapRow(ResultSet resultSet, int i) throws SQLException {

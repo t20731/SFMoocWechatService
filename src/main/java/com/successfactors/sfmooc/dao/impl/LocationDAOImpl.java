@@ -20,7 +20,7 @@ public class LocationDAOImpl implements LocationDAO{
 
     @Override
     public List<Location> getAll() {
-        List<Location> locations = jdbcTemplate.query("select id, name from location", new RowMapper<Location>() {
+        List<Location> locations = jdbcTemplate.query("select id, name from location order by id asc", new RowMapper<Location>() {
             @Nullable
             @Override
             public Location mapRow(ResultSet resultSet, int i) throws SQLException {

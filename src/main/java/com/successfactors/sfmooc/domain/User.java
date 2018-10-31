@@ -9,6 +9,11 @@ public class User {
      * 0 means normal user, 1 means attendee
      */
     private int status;
+    private String department;
+    private String signature;
+    private String seat;
+    private String blog;
+    private String github;
 
     public User() {
     }
@@ -57,4 +62,43 @@ public class User {
         this.status = status;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getSeat() {
+        return seat;
+    }
+
+    public void setSeat(String seat) {
+        this.seat = seat;
+    }
+
+    public String getBlog() {
+        return blog;
+    }
+
+    public void setBlog(String blog) {
+        this.blog = blog;
+    }
+
+    public String getGithub() {
+        return github;
+    }
+
+    public void setGithub(String github) {
+        this.github = github;
+    }
 }

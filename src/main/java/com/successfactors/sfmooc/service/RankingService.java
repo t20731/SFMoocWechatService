@@ -12,5 +12,6 @@ public interface RankingService {
     int updatePointsForHost(Integer sessionId, String userId);
     int updatePointsForCheckin(Integer sessionId, String userId);
     int updatePointsForLottery(Integer sessionId, Integer luckyNumber);
+    int getTotalPoints(String userId);
 
 }
