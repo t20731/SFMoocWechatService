@@ -11,6 +11,15 @@ public class FetchParams {
     private String ownerId;
     private String userId;
     private int status = -1;
+    private int completed;
+
+    public int getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(int completed) {
+        this.completed = completed;
+    }
 
     public int getStartPage(){
         return (pageNum - 1) * pageSize;
