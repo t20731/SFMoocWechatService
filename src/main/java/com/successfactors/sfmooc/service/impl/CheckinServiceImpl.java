@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -41,6 +43,18 @@ public class CheckinServiceImpl implements CheckinService {
         Integer number = random.nextInt(codeSize) + 1;
         logger.info("code number:" + number);
         return codeMap.get(number);
+    }
+
+    @Override
+    public String generateTileImageSrc() {
+        Map<Integer, String> imageMap = cacheService.getTileImageCache();
+        List<Integer> imageIdList = new ArrayList<>(imageMap.keySet());
+        int imageSize = imageIdList.size();
+        Random random = new Random();
+        Integer number = random.nextInt(imageSize);
+        Integer imageId = imageIdList.get(number);
+        logger.info("image id is:" + imageId);
+        return imageMap.get(imageId);
     }
 
     @Override

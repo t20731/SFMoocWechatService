@@ -37,6 +37,11 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public int editSession(Session session) {
+        if(session.getId() == null || session.getId() == 0){
+            String imageSrc = checkinService.generateTileImageSrc();
+            logger.info("Generate image src is: " + imageSrc);
+            session.setTileImageSrc(imageSrc);
+        }
         return sessionDAO.editSession(session);
     }
 

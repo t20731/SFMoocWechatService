@@ -16,6 +16,7 @@ public class Session {
     private String lastModifiedDate;
     private String checkInCode;
     private Integer questionStatus;
+    private String tileImageSrc;
 
     private int enrollments;
 
@@ -152,5 +153,13 @@ public class Session {
 
     public void setQuestionStatus(Integer questionStatus) {
         this.questionStatus = questionStatus;
+    }
+
+    public String getTileImageSrc() {
+        return tileImageSrc;
+    }
+
+    public void setTileImageSrc(String tileImageSrc) {
+        this.tileImageSrc = tileImageSrc;
     }
 }

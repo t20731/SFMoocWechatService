@@ -97,7 +97,7 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     public UserSession getSessionById(Integer sessionId, String userId) {
         String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.difficulty, s.checkin_code, s.question_status, "+
-                "d.name as direction, l.name as location, s.status, " +
+                "d.name as direction, l.name as location, s.status, s.image_src, " +
                 "u.id as uid, u.nickname, u.avatarUrl from user u, direction d, location l, session s where s.owner = u.id " +
                 "and s.direction_id = d.id and s.location_id = l.id and s.id = ? ";
         List<Session> sessions = jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<Session>() {
@@ -117,6 +117,7 @@ public class SessionDAOImpl implements SessionDAO {
                 Direction direction = new Direction();
                 direction.setName(resultSet.getString("direction"));
                 session.setDirection(direction);
+                session.setTileImageSrc(resultSet.getString("image_Src"));
                 session.setStatus(resultSet.getInt("status"));
                 User user = new User();
                 user.setId(resultSet.getString("uid"));
@@ -174,10 +175,10 @@ public class SessionDAOImpl implements SessionDAO {
                     session.getDifficulty(), now, session.getId()});
         } else {
             String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location_id, " +
-                    "direction_id, difficulty, status, created_date, last_modified_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "direction_id, difficulty, image_src, status, created_date, last_modified_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             return jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
                     session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
-                    session.getDirection().getId(), session.getDifficulty(), 0, now, now});
+                    session.getDirection().getId(), session.getDifficulty(), session.getTileImageSrc(), 0, now, now});
         }
     }
 
@@ -193,7 +194,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
-        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, s2.end_date, l.name as location, s2.direction_id, d.image_src, s2.status, s2.created_date, " +
+        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, s2.end_date, l.name as location, s2.direction_id, s2.image_src, s2.status, s2.created_date, " +
                 "s2.last_modified_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
                 "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
                 "on s1.id = usmap.session_id) a group by a.id) b " +
@@ -265,6 +266,7 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setId(resultSet.getInt("sid"));
                 session.setTopic(resultSet.getString("topic"));
                 session.setDifficulty(resultSet.getInt("difficulty"));
+                session.setTileImageSrc(resultSet.getString("image_Src"));
                 session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
                 session.setCreatedDate(DateUtil.formatDateToSecond(resultSet.getString("created_date")));
                 session.setLastModifiedDate(DateUtil.formatDateToSecond(resultSet.getString("last_modified_date")));
@@ -273,7 +275,6 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setLocation(location);
                 Direction direction = new Direction();
                 direction.setId(resultSet.getInt("direction_id"));
-                direction.setImageSrc(resultSet.getString("image_src"));
                 session.setDirection(direction);
                 session.setStatus(resultSet.getInt("status"));
                 User user = new User();

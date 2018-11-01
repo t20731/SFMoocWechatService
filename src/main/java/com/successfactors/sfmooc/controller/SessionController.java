@@ -41,6 +41,11 @@ public class SessionController {
     public Result loadAll(@RequestBody FetchParams fetchParams) {
         SessionVO sessionVO = new SessionVO();
         List<Direction> directions = directionService.getAll();
+        if(!CollectionUtils.isEmpty(directions)){
+            if(!"All".equalsIgnoreCase(directions.get(0).getName())){
+                fetchParams.setDirectionId(directions.get(0).getId());
+            }
+        }
         List<Session> sessions = sessionService.getSessionList(fetchParams);
         sessionVO.setDirections(directions);
         sessionVO.setSessions(sessions);

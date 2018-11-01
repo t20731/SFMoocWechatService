@@ -4,4 +4,5 @@ import java.util.Map;
 
 public interface CheckinDAO {
     Map<Integer, String> getAllCodes();
+    Map<Integer, String> getAllTileImages();
 }

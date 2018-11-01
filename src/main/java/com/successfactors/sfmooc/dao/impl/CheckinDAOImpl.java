@@ -30,4 +30,19 @@ public class CheckinDAOImpl implements CheckinDAO {
         });
         return result;
     }
+
+    @Override
+    public Map<Integer, String> getAllTileImages() {
+        Map<Integer, String> result = new HashMap<>(1024);
+        List<String> srcList = jdbcTemplate.query("select id, src from tile_image", new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                Integer id = resultSet.getInt("id");
+                String src = resultSet.getString("src");
+                result.put(id, src);
+                return src;
+            }
+        });
+        return result;
+    }
 }

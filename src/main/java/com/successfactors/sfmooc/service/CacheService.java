@@ -22,6 +22,8 @@ public class CacheService {
 
     private Map<Integer, String> checkinCodeCache = new ConcurrentHashMap<>();
 
+    private Map<Integer, String> tileImageCache = new ConcurrentHashMap<>();
+
     @Autowired
     private SessionDAO sessionDAO;
 
@@ -31,6 +33,7 @@ public class CacheService {
     public void loadDataOnStartUp(){
         //initializeSessionCache();
         initializeCodeCache();
+        initializeTileImageCache();
     }
 //
 //    private void initializeSessionCache() {
@@ -62,6 +65,20 @@ public class CacheService {
             logger.error("Fail to load code to cache", e);
         }
     }
+
+    private void initializeTileImageCache(){
+        try {
+            logger.info("Start to load code into cache...");
+            Map<Integer, String> tileImageMap = checkinDAO.getAllTileImages();
+            if (tileImageMap != null && !tileImageMap.isEmpty()) {
+                tileImageCache.putAll(tileImageMap);
+            }
+            logger.info("Load "+tileImageCache.size()+" tile images into cache");
+        } catch (Exception e) {
+            logger.error("Fail to load tile images to cache", e);
+        }
+    }
+
 //
 //    public  Map<String, Session> getUserToSessionCache() {
 //        return userToSessionCache;
@@ -73,6 +90,9 @@ public class CacheService {
 //
     public Map<Integer, String> getCheckinCodeCache() {
         return checkinCodeCache;
+    }
+    public Map<Integer, String> getTileImageCache() {
+        return tileImageCache;
     }
 //
 //    public Session getSessionFromCacheById(Integer sessionId){
