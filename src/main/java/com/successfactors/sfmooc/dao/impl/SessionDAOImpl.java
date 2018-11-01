@@ -96,7 +96,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public UserSession getSessionById(Integer sessionId, String userId) {
-        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.checkin_code, s.question_status, "+
+        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.difficulty, s.checkin_code, s.question_status, "+
                 "d.name as direction, l.name as location, s.status, " +
                 "u.id as uid, u.nickname, u.avatarUrl from user u, direction d, location l, session s where s.owner = u.id " +
                 "and s.direction_id = d.id and s.location_id = l.id and s.id = ? ";
@@ -110,6 +110,7 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setDescription(resultSet.getString("description"));
                 session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
                 session.setEndDate(DateUtil.formatDateToMinutes(resultSet.getString("end_date")));
+                session.setDifficulty(resultSet.getInt("difficulty"));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
                 session.setLocation(location);
