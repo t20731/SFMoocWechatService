@@ -5,6 +5,8 @@ import com.successfactors.sfmooc.service.DirectionService;
 import com.successfactors.sfmooc.service.LocationService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/session")
 public class SessionController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SessionService sessionService;
@@ -65,6 +68,8 @@ public class SessionController {
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public Result editSession(@RequestBody Session session) {
+        logger.info("session start_date: " + session.getStartDate());
+        logger.info("session end_date: " + session.getEndDate());
         int status = sessionService.editSession(session);
         return new Result(status, Constants.SUCCESS);
     }
