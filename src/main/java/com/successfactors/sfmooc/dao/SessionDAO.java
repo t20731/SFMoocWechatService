@@ -18,20 +18,6 @@ public interface SessionDAO {
     int cancel(Integer sessionId);
     int start(Integer sessionId);
     String getCheckInCode(Integer sessionId);
-
-//    List<Session> getSessionList(String season);
-//
-//    Session getSessionByDate(String date);
-//
-//    Session getSessionByOwner(String userId);
-//
     int updateCheckinCode(Integer sessionId, String checkinCode);
-
     List<String> getAttendeeList(Integer sessionId);
-//
-//    int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
-//
-//    List<SessionVO> loadHistorySessions();
-//
-//    String getCurrentSeason();
 }

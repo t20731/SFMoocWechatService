@@ -192,15 +192,13 @@ public class SessionDAOImpl implements SessionDAO {
         return jdbcTemplate.update("update session set status = ? where id = ?", new Object[]{1, sessionId});
     }
 
-    @Override
-    public List<Session> getSessionList(FetchParams fetchParams) {
+    public String buildSessionQuery(FetchParams fetchParams, List<Object> params) {
         String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, s2.end_date, l.name as location, s2.direction_id, s2.image_src, s2.status, s2.created_date, " +
                 "s2.last_modified_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
                 "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
                 "on s1.id = usmap.session_id) a group by a.id) b " +
                 " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and s2.id = b.id ";
         StringBuilder sb = new StringBuilder(query);
-        List<Object> params = new ArrayList<>();
         int direction = fetchParams.getDirectionId();
         if (direction > 0) {
             sb.append("and s2.direction_id = ? ");
@@ -238,6 +236,16 @@ public class SessionDAOImpl implements SessionDAO {
                     "where s.sid = usmap1.session_id and usmap1.user_id = ? ");
             params.add(userId);
         }
+        return sb.toString();
+    }
+
+    @Override
+    public List<Session> getSessionList(FetchParams fetchParams) {
+        if(fetchParams.getCompleted() == 1){
+            return getCompletedSessionList(fetchParams);
+        }
+        List<Object> params = new ArrayList<>(16);
+        StringBuilder sb = new StringBuilder(buildSessionQuery(fetchParams, params));
         sb.append("order by ");
         String orderField = fetchParams.getOrderField();
         if (!StringUtils.isEmpty(orderField) && Constants.ORDER_FIELD_SET.contains(orderField)) {
@@ -250,16 +258,34 @@ public class SessionDAOImpl implements SessionDAO {
             }
             sb.append(",");
         }
-        sb.append(completed == 1 ? " end_date desc" : " start_date asc").append(" limit ?, ?");
+        sb.append(" start_date asc limit ?, ?");
         params.add(fetchParams.getStartPage());
         params.add(fetchParams.getPageSize());
-        Object[] paramsArray = new Object[params.size()];
-        for (int i = 0; i < params.size(); i++) {
-            paramsArray[i] = params.get(i);
-        }
         logger.info("Session list query: " + sb.toString());
         logger.info("Params: " + params);
-        return jdbcTemplate.query(sb.toString(), paramsArray, new RowMapper<Session>() {
+        return executeSessionQuery(sb.toString(), params.toArray());
+    }
+
+    private List<Session> getCompletedSessionList(FetchParams fetchParams){
+        if(fetchParams.getCompleted() != 1 || fetchParams.getUserId() == null){
+            return Collections.emptyList();
+        }
+        List<Object> params = new ArrayList<>(16);
+        StringBuilder sb = new StringBuilder("select * from ( ");
+        sb.append("(").append(buildSessionQuery(fetchParams, params)).append(") union ");
+        fetchParams.setOwnerId(fetchParams.getUserId());
+        fetchParams.setUserId(null);
+        sb.append("(").append(buildSessionQuery(fetchParams, params)).append(")) cs ");
+        sb.append("order by cs.end_date desc limit ?, ?");
+        params.add(fetchParams.getStartPage());
+        params.add(fetchParams.getPageSize());
+        logger.info("Completed Session query: " + sb.toString());
+        logger.info("Params: " + params);
+        return executeSessionQuery(sb.toString(), params.toArray());
+    }
+
+    private List<Session> executeSessionQuery(String query, Object[] params){
+        List<Session> sessionList = jdbcTemplate.query(query, params, new RowMapper<Session>() {
             @Override
             public Session mapRow(ResultSet resultSet, int i) throws SQLException {
                 Session session = new Session();
@@ -285,76 +311,14 @@ public class SessionDAOImpl implements SessionDAO {
                 return session;
             }
         });
+        return sessionList;
     }
 
-
-//    @Override
-//    public List<SessionVO> loadHistorySessions(){
-//        String query = "select id, owner, date, season, episode from session where question_status = 1" +
-//                " order by date desc";
-//        return jdbcTemplate.query(query, new RowMapper<SessionVO>() {
-//            @Override
-//            public SessionVO mapRow(ResultSet resultSet, int i) throws SQLException {
-//                SessionVO session = new SessionVO();
-//                session.setId(resultSet.getInt("id"));
-//                session.setOwner(resultSet.getString("owner"));
-//                session.setDate(resultSet.getString("date"));
-//                String season = resultSet.getString("season");
-//                String episode = resultSet.getString("episode");
-//                session.setTitle(season + episode);
-//                return session;
-//            }
-//        });
-//    }
-//
-//
-//    @Override
-//    public List<Session> getSessionList(String season) {
-//       String query = "select s.id, s.owner, s.date, u.nickname, u.avatarUrl, u.department from user u, session s where "+
-//                " s.owner = u.id and s.season = ? order by s.date";
-//        return jdbcTemplate.query(query, new Object[]{season}, new RowMapper<Session>() {
-//            @Override
-//            public Session mapRow(ResultSet resultSet, int i) throws SQLException {
-//                Session session = new Session();
-//                session.setSessionId(resultSet.getInt("id"));
-//                session.setOwner(resultSet.getString("owner"));
-//                session.setSessionDate(resultSet.getString("date"));
-//                session.setNickname(resultSet.getString("nickname"));
-//                session.setAvatarUrl(resultSet.getString("avatarUrl"));
-//                session.setDepartment(resultSet.getString("department"));
-//                return session;
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public Session getSessionByDate(String date){
-//       String query = "select id, owner, date, checkin_code from session where date = ?";
-//       List<Session> sessions = jdbcTemplate.query(query, new Object[]{date}, new SessionRowMapper());
-//       if (sessions != null && !sessions.isEmpty()){
-//           return sessions.get(0);
-//       }else {
-//           return null;
-//       }
-//    }
-//
-//    @Override
-//    public Session getSessionByOwner(String userId){
-//        String season = getCurrentSeason();
-//        String query = "select id, owner, date, checkin_code from session where season = ? and owner = ?";
-//        List<Session> sessions = jdbcTemplate.query(query, new Object[]{season, userId}, new SessionRowMapper());
-//        if (sessions != null && !sessions.isEmpty()){
-//            return sessions.get(0);
-//        }else {
-//            return null;
-//        }
-//    }
-//
     @Override
     public int updateCheckinCode(Integer sessionId, String checkinCode) {
         return jdbcTemplate.update("update session set checkin_code = ? where id = ?", new Object[]{checkinCode, sessionId});
     }
-//
+
     @Override
     public List<String> getAttendeeList(Integer sessionId) {
         String query = "select user_id from points where checkin > 0 and session_id = ?";
@@ -365,38 +329,4 @@ public class SessionDAOImpl implements SessionDAO {
             }
         });
     }
-//
-//    @Override
-//    public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
-//        return jdbcTemplate.update("update session set lucky_number = ? where id = ?", new Object[]{luckyNumber, sessionId});
-//    }
-//
-//    @Override
-//    public String getCurrentSeason() {
-//        String today = DateUtil.formatDate(new Date());
-//        String query = "select season from session group by season having min(date) <= ? and max(date) >= ?";
-//        List<String> seasonList = jdbcTemplate.query(query, new Object[]{today, today}, new RowMapper<String>() {
-//            @Override
-//            public String mapRow(ResultSet resultSet, int i) throws SQLException {
-//                return resultSet.getString("season");
-//            }
-//        });
-//        if (seasonList == null || seasonList.isEmpty()) {
-//            return "S1";
-//        } else {
-//            return seasonList.get(0);
-//        }
-//    }
-//
-//    class SessionRowMapper implements RowMapper<Session> {
-//        @Override
-//        public Session mapRow(ResultSet resultSet, int i) throws SQLException {
-//            Session session = new Session();
-//            session.setSessionId(resultSet.getInt("id"));
-//            session.setOwner(resultSet.getString("owner"));
-//            session.setSessionDate(resultSet.getString("date"));
-//            session.setCheckinCode(resultSet.getString("checkin_code"));
-//            return session;
-//        }
-//    }
 }
