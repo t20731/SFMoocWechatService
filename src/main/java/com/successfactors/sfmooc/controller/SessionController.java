@@ -49,6 +49,12 @@ public class SessionController {
                 fetchParams.setDirectionId(directions.get(0).getId());
             }
         }
+        FetchParams fetchParamsHot = new FetchParams();
+        fetchParamsHot.setPageNum(1);
+        fetchParamsHot.setPageSize(3);
+        fetchParamsHot.setOrderField(Constants.TOTAL_MEMBERS);
+        List<Session> hotSessions = sessionService.getSessionList(fetchParamsHot);
+        sessionVO.setHotSessions(hotSessions);
         List<Session> sessions = sessionService.getSessionList(fetchParams);
         sessionVO.setDirections(directions);
         sessionVO.setSessions(sessions);

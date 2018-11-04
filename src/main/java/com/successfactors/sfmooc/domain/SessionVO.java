@@ -6,6 +6,8 @@ public class SessionVO {
 
     private List<Direction> directions;
 
+    private List<Session> hotSessions;
+
     private List<Session> sessions;
 
     private List<Location> locations;
@@ -35,5 +37,13 @@ public class SessionVO {
 
     public void setLocations(List<Location> locations) {
         this.locations = locations;
+    }
+
+    public List<Session> getHotSessions() {
+        return hotSessions;
+    }
+
+    public void setHotSessions(List<Session> hotSessions) {
+        this.hotSessions = hotSessions;
     }
 }
