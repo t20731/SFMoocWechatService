@@ -112,6 +112,16 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS, retObj);
     }
 
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    public Result like(@RequestBody Session session) {
+        int status = sessionService.like(session.getLike().getUserId(), session.getLike().getSessionId(),
+                session.getLike().getLike());
+        if(status == 0) {
+            return new Result(status, Constants.ERROR);
+        }
+        return new Result(status, Constants.SUCCESS, session.getLike());
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Result batchDelete(@RequestBody List<Integer> sessionIdList){
         if(CollectionUtils.isEmpty(sessionIdList)){

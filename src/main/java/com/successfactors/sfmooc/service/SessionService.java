@@ -13,6 +13,7 @@ public interface SessionService {
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
+    int like(String userId, Integer sessionId, int like);
     int getEnrollments(Integer sessionId);
     int batchDelete(List<Integer> sessionIdList);
     int cancel(Integer sessionId);

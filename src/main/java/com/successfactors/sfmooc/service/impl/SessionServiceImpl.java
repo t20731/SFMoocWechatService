@@ -36,6 +36,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public int like(String userId, Integer sessionId, int like) {
+        return sessionDAO.like(userId, sessionId, like);
+    }
+
+    @Override
     public int editSession(Session session) {
         if(session.getId() == null || session.getId() == 0){
             String imageSrc = checkinService.generateTileImageSrc();
