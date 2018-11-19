@@ -113,13 +113,15 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
-    public Result like(@RequestBody Session session) {
-        int status = sessionService.like(session.getLike().getUserId(), session.getLike().getSessionId(),
-                session.getLike().getLike());
+    public Result like(@RequestBody Map params) {
+        String userId = (String) params.get("userId");
+        Integer sessionId = (Integer) params.get("sessionId");
+        int like = (int) params.get("like");
+        int status = sessionService.like(userId, sessionId, like);
         if(status == 0) {
-            return new Result(status, Constants.ERROR);
+            return new Result(status, Constants.ILLEGAL_ARGUMENT);
         }
-        return new Result(status, Constants.SUCCESS, session.getLike());
+        return new Result(status, Constants.SUCCESS);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)

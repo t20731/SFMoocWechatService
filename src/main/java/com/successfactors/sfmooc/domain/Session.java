@@ -17,7 +17,7 @@ public class Session {
     private String checkInCode;
     private Integer questionStatus;
     private String tileImageSrc;
-    private Like like;
+    private int like;
 
     private int enrollments;
 
@@ -164,9 +164,9 @@ public class Session {
         this.tileImageSrc = tileImageSrc;
     }
 
-    public Like getLike() {
+    public int getLike() {
         return like;
     }
 
-    public void setLike(Like like) { this.like = like; }
+    public void setLike(int like) { this.like = like; }
 }

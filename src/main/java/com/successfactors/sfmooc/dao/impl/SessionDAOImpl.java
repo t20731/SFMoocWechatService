@@ -73,17 +73,9 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int like (String userId, Integer sessionId, int like) {
+    public int like(String userId, Integer sessionId, int like) {
         int result = 0;
-        if (like == 1){
-            result = jdbcTemplate.update("insert into user_session_map(user_id, session_id, like) " +
-                    "values (?, ?, 1)", new Object[]{userId, sessionId, like});
-        }
-        else {
-            result = jdbcTemplate.update("insert into user_session_map(user_id, session_id, like) " +
-                    "values (?, ?, 0)", new Object[]{userId, sessionId, like});
-        }
-        return result;
+        return result = jdbcTemplate.update("UPDATE user_session_map SET `like` = ? WHERE user_id = ? AND session_id = ?", new Object[]{like, userId, sessionId});
     }
 
     @Override
