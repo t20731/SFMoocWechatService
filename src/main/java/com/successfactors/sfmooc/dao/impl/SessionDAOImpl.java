@@ -321,12 +321,17 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public List<String> getAttendeeList(Integer sessionId) {
-        String query = "select user_id from points where checkin > 0 and session_id = ?";
+        String query = "select user_id from points where checkin > 0 or host > 0 and session_id = ?";
         return jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet resultSet, int i) throws SQLException {
                 return resultSet.getString("user_id");
             }
         });
+    }
+
+    @Override
+    public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
+        return jdbcTemplate.update("update session set lucky_number = ? where id = ?", new Object[]{luckyNumber, sessionId});
     }
 }

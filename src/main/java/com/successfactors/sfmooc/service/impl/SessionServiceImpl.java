@@ -159,11 +159,11 @@ public class SessionServiceImpl implements SessionService {
         }
         return null;
     }
-//
-//    @Override
-//    public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
-//        return sessionDAO.updateLuckyNumber(sessionId, luckyNumber);
-//    }
+
+    @Override
+    public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
+        return sessionDAO.updateLuckyNumber(sessionId, luckyNumber);
+    }
 //
 //    @Override
 //    public List<SessionVO> loadHistorySessions() {

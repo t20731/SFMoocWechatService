@@ -20,4 +20,5 @@ public interface SessionDAO {
     String getCheckInCode(Integer sessionId);
     int updateCheckinCode(Integer sessionId, String checkinCode);
     List<String> getAttendeeList(Integer sessionId);
+    int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
 }

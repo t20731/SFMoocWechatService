@@ -6,6 +6,7 @@ public class Points {
     private int checkin;
     private int host;
     private Integer exam;
+    private Integer lottery;
     private String date;
 
     public String getUserId() {
@@ -46,6 +47,14 @@ public class Points {
 
     public void setExam(Integer exam) {
         this.exam = exam;
+    }
+
+    public Integer getLottery() {
+        return lottery;
+    }
+
+    public void setLottery(Integer lottery) {
+        this.lottery = lottery;
     }
 
     public String getDate() {

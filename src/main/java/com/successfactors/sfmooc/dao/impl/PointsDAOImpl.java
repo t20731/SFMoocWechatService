@@ -23,7 +23,7 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public int getTotalPoints(String userId) {
-        String query = "select sum(checkin)+sum(host)+sum(ifnull(exam,0)) as total_points from points p, session s " +
+        String query = "select sum(checkin)+sum(host)+sum(ifnull(exam,0))+sum(ifnull(lottery,0)) as total_points from points p, session s " +
                 " where p.session_id = s.id and p.user_id = ?";
         return jdbcTemplate.queryForObject(query, new Object[]{userId}, new RowMapper<Integer>() {
             @Override
@@ -38,7 +38,7 @@ public class PointsDAOImpl implements PointsDAO{
         String query = "select a.id, a.nickname, a.avatarUrl, ifnull(b.session_points, 0)  as total_points " +
                   "from  (select id, nickname, avatarUrl from user) a " +
                   "left outer join " +
-                  "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0)) as session_points from points p, session s " +
+                  "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0))+sum(ifnull(lottery, 0)) as session_points from points p, session s " +
                   " where p.session_id = s.id group by p.user_id) b " +
                   "on a.id = b.user_id order by total_points desc";
 
@@ -58,7 +58,7 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public List<Points> getPointsDetailForUser(String userId) {
-        String query = "select start_date, checkin, host, exam from points p, session s " +
+        String query = "select start_date, checkin, host, exam, lottery from points p, session s " +
                 "where p.session_id = s.id and p.user_id = ? order by start_date desc";
         return jdbcTemplate.query(query, new Object[]{userId}, new RowMapper<Points>() {
             @Override
@@ -68,6 +68,7 @@ public class PointsDAOImpl implements PointsDAO{
                points.setCheckin(resultSet.getInt("checkin"));
                points.setHost(resultSet.getInt("host"));
                points.setExam(resultSet.getInt("exam"));
+               points.setLottery(resultSet.getInt("lottery"));
                return points;
             }
         });

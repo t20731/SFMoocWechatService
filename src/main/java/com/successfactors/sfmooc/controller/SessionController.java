@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/session")
@@ -150,6 +151,11 @@ public class SessionController {
         return new Result(1, Constants.SUCCESS, retObj);
     }
 
+    @RequestMapping(value = "/usercount/{sessionId}", method = RequestMethod.GET)
+    public Result getNumOfAttendee(@PathVariable("sessionId") Integer sessionId){
+        Set<String> userList = sessionService.getAttendeeList(sessionId);
+        return new Result(0, Constants.SUCCESS, userList == null ? 0 : userList.size());
+    }
 
 
 //    @RequestMapping(value="/list", method = RequestMethod.GET)
@@ -167,10 +173,5 @@ public class SessionController {
 //        }
 //    }
 //
-//    @RequestMapping(value = "/usercount", method = RequestMethod.GET)
-//    public Result getNumOfAttendee(){
-//        Set<String> userList = sessionService.getAttendeeList();
-//        return new Result(0, Constants.SUCCESS, userList == null ? 0 : userList.size());
-//    }
 
 }

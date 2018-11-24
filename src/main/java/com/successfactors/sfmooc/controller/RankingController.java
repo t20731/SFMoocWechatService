@@ -57,6 +57,7 @@ public class RankingController {
                     totalPoints += points.getCheckin();
                     totalPoints += points.getHost();
                     totalPoints += points.getExam();
+                    totalPoints += points.getLottery();
                 }
             }
             retObj.put("totalPoints", totalPoints);
