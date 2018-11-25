@@ -103,10 +103,16 @@ public class PointsDAOImpl implements PointsDAO{
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int updatePointsForLottery(Integer sessionId, Integer luckyNumber) {
-        jdbcTemplate.update("update points set lottery = 0 where session_id = ? and bet_number != ?",
+        int result = jdbcTemplate.update("update points set lottery = 0 where session_id = ? and bet_number != ?",
                 new Object[]{sessionId, luckyNumber});
-        return jdbcTemplate.update("update points set lottery = 5 where session_id = ? and bet_number = ?",
-                new Object[]{sessionId, luckyNumber});
+
+        List<String> luckyUsers = getLuckyUsers(sessionId,luckyNumber);
+        for (String luckyUser : luckyUsers){
+            int point = getLotteryPointForUser(luckyUser);
+            result = jdbcTemplate.update("update points set lottery = ? where session_id = ? and bet_number = ?",
+                    new Object[]{point, sessionId, luckyNumber});
+        }
+        return result;
     }
 
     private int getSessionCount(Integer sessionId, String userId){
@@ -158,5 +164,31 @@ public class PointsDAOImpl implements PointsDAO{
                 return -1;
             }
         }
+    }
+
+    private List<String> getLuckyUsers(Integer sessionId, Integer luckyNumber){
+        return jdbcTemplate.query("select user_id from points where session_id = ?" +
+                " and bet_number = ?", new Object[]{sessionId, luckyNumber}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getString("user_id");
+            }
+        });
+    }
+
+    private int getLotteryPointForUser(String userId){
+        int count = jdbcTemplate.queryForObject("select count(1) as cnt from points where user_id = ?" +
+                " and lottery > 0", new Object[]{userId}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("cnt");
+            }
+        });
+        if (count >= 5){
+            return 1;
+        }else{
+            return 5-count;
+        }
+
     }
 }
