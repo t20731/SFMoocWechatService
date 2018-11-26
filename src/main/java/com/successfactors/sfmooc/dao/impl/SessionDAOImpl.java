@@ -72,6 +72,59 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int like(String userId, Integer sessionId, Integer like) {
+        int count = getUserSessionCount(userId, sessionId);
+        int result = 0;
+        if (count == 1) {
+            result = jdbcTemplate.update("update user_session_map set `like` = ? " +
+                    "where user_id = ? and session_id = ?", new Object[]{like, userId, sessionId});
+        }
+        else {
+            logger.error("Not found the user " + userId +" for this session " + sessionId +". Please check your session");
+        }
+        return result;
+    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int getSessionLikeCount(Integer sessionId ){
+        int count;
+        Object result =  jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
+                "session_id = ? and `like` = 1", new Object[]{sessionId}, new RowMapper<Integer>() {
+            @Nullable
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("cnt");
+            }
+        });
+        if(result == null){
+            count = 0;
+        } else {
+            count = (int) result;
+        }
+        return count;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int getLike(String userId, Integer sessionId) {
+        int count;
+        Object result = jdbcTemplate.queryForObject("select `like` as isLike from user_session_map " +
+                "where user_id = ? and session_id = ?", new Object[]{userId, sessionId}, new RowMapper<Integer>() {
+            @Nullable
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("isLike");
+            }});
+        if(result == null){
+            count = 0;
+        } else {
+            count = (int) result;
+        }
+        return count;
+    }
+
+    @Override
     public int getEnrollments(Integer sessionId) {
         return jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
                 "session_id = ?", new Object[]{sessionId}, new RowMapper<Integer>() {

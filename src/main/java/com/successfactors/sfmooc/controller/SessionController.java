@@ -92,7 +92,11 @@ public class SessionController {
             return new Result(0, Constants.NO_DATA);
         } else {
             int enrollments = sessionService.getEnrollments(enrollment.getSessionId());
+            int sessionCount = sessionService.getSessionLikeCount(enrollment.getSessionId());
             session.getSession().setEnrollments(enrollments);
+            session.getSession().setLikeCount(sessionCount);
+            int userLike = sessionService.getLike( enrollment.getUserId(),enrollment.getSessionId());
+            session.setUserLike(userLike);
             return new Result(1, Constants.SUCCESS, session);
         }
     }
@@ -157,7 +161,57 @@ public class SessionController {
         return new Result(0, Constants.SUCCESS, userList == null ? 0 : userList.size());
     }
 
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    public Result like(@RequestBody Map params){
+        if(params == null){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        String userId = (String) params.get("userId");
+        Integer sessionId = (Integer) params.get("sessionId");
+        Integer like = (Integer) params.get("like");
 
+        if (StringUtils.isEmpty(userId) || sessionId == null || sessionId == 0 ) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT, null);
+        }
+        if (like != 0 && like != 1){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT, null);
+        }
+
+        int result = sessionService.like(userId, sessionId, like);
+        if(result == 0){
+            return new Result(-1, Constants.ERROR);
+        }
+        Map<String, Object> retObj = new HashMap<>(1);
+        retObj.put("updatedRowCount", result);
+        retObj.put("returnedLike", like);
+        return new Result(1, Constants.SUCCESS, retObj);
+    }
+
+    @RequestMapping(value = "/getlike", method = RequestMethod.POST)
+    public Result getlike(@RequestBody Map params){
+        if(params == null){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        String userId = (String) params.get("userId");
+        Object sessionIdObj= params.get("sessionId");
+        Integer sessionId = 0;
+        if (StringUtils.isEmpty(userId) || sessionIdObj == null  ) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT, null);
+        }
+        if (sessionIdObj instanceof String){
+            sessionId = Integer.valueOf((String) sessionIdObj);
+        }
+        if(sessionIdObj instanceof Integer){
+            sessionId = (Integer) sessionIdObj;
+        }
+
+        int like = sessionService.getLike(userId, sessionId);
+        if(like == -1){
+            return new Result(-1, Constants.ERROR);
+        } else {
+            return new Result(1, Constants.SUCCESS, like);
+        }
+    }
 //    @RequestMapping(value="/list", method = RequestMethod.GET)
 //    public List<Session> getSessionList(){
 //        return sessionService.getSessionList();

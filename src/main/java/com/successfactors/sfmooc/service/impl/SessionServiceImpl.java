@@ -83,6 +83,18 @@ public class SessionServiceImpl implements SessionService {
         return sessionDAO.getCheckInCode(sessionId);
     }
 
+    @Override
+    public int getSessionLikeCount(Integer sessionId ){
+        return sessionDAO.getSessionLikeCount(sessionId);
+    }
+    @Override
+    public int like(String userId, Integer sessionId, Integer like) {
+        return sessionDAO.like(userId, sessionId, like);
+    }
+    @Override
+    public int getLike(String userId, Integer sessionId) {
+        return sessionDAO.getLike(userId, sessionId);
+    }
     //    public List<Session> getSessionList() {
 //       // List<Session> sessionList = (List<Session>) cacheService.getSessionCache().values();
 //        String season = getCurrentSeason();

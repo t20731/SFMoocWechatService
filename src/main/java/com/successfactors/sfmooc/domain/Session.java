@@ -17,6 +17,7 @@ public class Session {
     private String checkInCode;
     private Integer questionStatus;
     private String tileImageSrc;
+    private int likeCount;
 
     private int enrollments;
 
@@ -162,4 +163,13 @@ public class Session {
     public void setTileImageSrc(String tileImageSrc) {
         this.tileImageSrc = tileImageSrc;
     }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
 }

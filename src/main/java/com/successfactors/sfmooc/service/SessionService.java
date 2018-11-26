@@ -16,6 +16,9 @@ public interface SessionService {
     int getEnrollments(Integer sessionId);
     int batchDelete(List<Integer> sessionIdList);
     int cancel(Integer sessionId);
+    int like(String userId, Integer sessionId, Integer like);
+    int getLike(String userId, Integer sessionId);
+    int getSessionLikeCount(Integer sessionId );
     String start(String userId, Integer sessionId);
     String getCheckInCode(Integer sessionId);
 //    Session getSessionByDate(String date);
