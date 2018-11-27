@@ -2,18 +2,15 @@ package com.successfactors.sfmooc.controller;
 
 import com.successfactors.sfmooc.domain.Question;
 import com.successfactors.sfmooc.domain.Result;
-import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.service.QuestionService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
-import com.successfactors.sfmooc.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -37,6 +34,17 @@ public class QuestionController {
             return new Result(-1, "exceed_threshold");
         }
         return new Result(status, Constants.SUCCESS);
+    }
+
+    @RequestMapping(value = "/load_one/{questionId}", method = RequestMethod.GET)
+    public Result loadOneQuestion(@PathVariable("questionId") Integer questionId) {
+        if (questionId == null || questionId <= 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        Integer sessionId = questionService.getSessionIdByQuestionId(questionId);
+        List<Question> questionList = questionService.loadQuestions(sessionId, 0);
+        Question question = questionList.get(0);
+        return new Result(0, Constants.SUCCESS, question);
     }
 
     @RequestMapping(value = "/load/{sessionId}", method = RequestMethod.GET)

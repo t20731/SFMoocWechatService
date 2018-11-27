@@ -97,6 +97,18 @@ public class QuestionDAOImpl implements QuestionDAO {
     }
 
     @Override
+    public Integer getSessionIdByQuestionId(Integer questionId) {
+        String query = "select session_id as sid from question where id = ?";
+        Integer sessionId = jdbcTemplate.queryForObject(query, new Object[]{questionId}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("sid");
+            }
+        });
+        return sessionId;
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteQuestion(Integer questionId) {
         logger.info("Start to delete question: " + questionId);

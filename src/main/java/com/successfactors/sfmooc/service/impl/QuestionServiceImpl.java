@@ -37,4 +37,9 @@ public class QuestionServiceImpl implements QuestionService {
     public int publish(Integer sessionId) {
         return questionDAO.publish(sessionId);
     }
+
+    @Override
+    public Integer getSessionIdByQuestionId(Integer questionId) {
+        return questionDAO.getSessionIdByQuestionId(questionId);
+    };
 }
