@@ -2,15 +2,18 @@ package com.successfactors.sfmooc.controller;
 
 import com.successfactors.sfmooc.domain.Question;
 import com.successfactors.sfmooc.domain.Result;
+import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.service.QuestionService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.utils.Constants;
+import com.successfactors.sfmooc.utils.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
