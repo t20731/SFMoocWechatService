@@ -92,11 +92,13 @@ public class SessionController {
             return new Result(0, Constants.NO_DATA);
         } else {
             int enrollments = sessionService.getEnrollments(enrollment.getSessionId());
-            int sessionCount = sessionService.getSessionLikeCount(enrollment.getSessionId());
             session.getSession().setEnrollments(enrollments);
-            session.getSession().setLikeCount(sessionCount);
-            int userLike = sessionService.getLike( enrollment.getUserId(),enrollment.getSessionId());
-            session.setUserLike(userLike);
+            if(session.isUserRegistered()){
+                int sessionCount = sessionService.getSessionLikeCount(enrollment.getSessionId());
+                session.getSession().setLikeCount(sessionCount);
+                int userLike = sessionService.getLike( enrollment.getUserId(),enrollment.getSessionId());
+                session.setUserLike(userLike);
+            }
             return new Result(1, Constants.SUCCESS, session);
         }
     }
