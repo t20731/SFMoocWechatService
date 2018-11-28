@@ -89,7 +89,7 @@ public class SessionDAOImpl implements SessionDAO {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int getSessionLikeCount(Integer sessionId ){
         int count;
-        Object result =  jdbcTemplate.queryForObject("select count(1) as cnt from user_session_map where " +
+        List<Integer> result =  jdbcTemplate.query("select count(1) as cnt from user_session_map where " +
                 "session_id = ? and `like` = 1", new Object[]{sessionId}, new RowMapper<Integer>() {
             @Nullable
             @Override
@@ -97,10 +97,10 @@ public class SessionDAOImpl implements SessionDAO {
                 return resultSet.getInt("cnt");
             }
         });
-        if(result == null){
+        if(result == null || result.size() == 0){
             count = 0;
         } else {
-            count = (int) result;
+            count = result.get(0);
         }
         return count;
     }
@@ -109,17 +109,16 @@ public class SessionDAOImpl implements SessionDAO {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int getLike(String userId, Integer sessionId) {
         int count;
-        Object result = jdbcTemplate.queryForObject("select `like` as isLike from user_session_map " +
-                "where user_id = ? and session_id = ?", new Object[]{userId, sessionId}, new RowMapper<Integer>() {
-            @Nullable
+        List<Integer> result = jdbcTemplate.query("select `like` as isLike from user_session_map " +
+                "where user_id = ? and session_id = ?",new Object[]{userId, sessionId},  new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
                 return resultSet.getInt("isLike");
             }});
-        if(result == null){
+        if(result == null || result.size() == 0){
             count = 0;
         } else {
-            count = (int) result;
+            count = result.get(0);
         }
         return count;
     }
