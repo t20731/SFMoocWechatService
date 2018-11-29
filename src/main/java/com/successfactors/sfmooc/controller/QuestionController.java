@@ -40,7 +40,7 @@ public class QuestionController {
         return new Result(status, Constants.SUCCESS);
     }
 
-    @RequestMapping(value = "/load_one", method = RequestMethod.GET)
+    @RequestMapping(value = "/load_one", method = RequestMethod.POST)
     public Result loadOneQuestion(@RequestBody Map params) {
         if (params == null) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
