@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.dao.impl;
 
+import com.successfactors.sfmooc.dao.LotteryDAO;
 import com.successfactors.sfmooc.dao.PointsDAO;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
@@ -20,6 +21,9 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private LotteryDAO lotteryDAO;
 
     @Override
     public int getTotalPoints(String userId) {
@@ -106,7 +110,7 @@ public class PointsDAOImpl implements PointsDAO{
         int result = jdbcTemplate.update("update points set lottery = 0 where session_id = ? and bet_number != ?",
                 new Object[]{sessionId, luckyNumber});
 
-        List<String> luckyUsers = getLuckyUsers(sessionId,luckyNumber);
+        List<String> luckyUsers = lotteryDAO.getLuckyDogs(sessionId,luckyNumber);
         for (String luckyUser : luckyUsers){
             int point = getLotteryPointForUser(luckyUser);
             result = jdbcTemplate.update("update points set lottery = ? where session_id = ? and bet_number = ?",
@@ -164,16 +168,6 @@ public class PointsDAOImpl implements PointsDAO{
                 return -1;
             }
         }
-    }
-
-    private List<String> getLuckyUsers(Integer sessionId, Integer luckyNumber){
-        return jdbcTemplate.query("select user_id from points where session_id = ?" +
-                " and bet_number = ?", new Object[]{sessionId, luckyNumber}, new RowMapper<String>() {
-            @Override
-            public String mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getString("user_id");
-            }
-        });
     }
 
     private int getLotteryPointForUser(String userId){
