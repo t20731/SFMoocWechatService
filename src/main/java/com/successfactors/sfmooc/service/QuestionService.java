@@ -9,4 +9,5 @@ public interface QuestionService {
     List<Question> loadQuestions(Integer sessionId, int status);
     int deleteQuestion(Integer questionId);
     int publish(Integer sessionId);
+    Integer getSessionIdByQuestionId(Integer questionId);
 }

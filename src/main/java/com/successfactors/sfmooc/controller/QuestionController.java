@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/question")
@@ -37,6 +38,19 @@ public class QuestionController {
             return new Result(-1, "exceed_threshold");
         }
         return new Result(status, Constants.SUCCESS);
+    }
+
+    @RequestMapping(value = "/load_one", method = RequestMethod.POST)
+    public Result loadOneQuestion(@RequestBody Map params) {
+        if (params == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        Integer questionId = (Integer) params.get("questionId");
+        int questionIndex = (int) params.get("questionIndex");
+        Integer sessionId = questionService.getSessionIdByQuestionId(questionId);
+        List<Question> questionList = questionService.loadQuestions(sessionId, 0);
+        Question question = questionList.get(questionIndex);
+        return new Result(0, Constants.SUCCESS, question);
     }
 
     @RequestMapping(value = "/load/{sessionId}", method = RequestMethod.GET)

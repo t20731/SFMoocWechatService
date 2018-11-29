@@ -10,4 +10,5 @@ public interface QuestionDAO {
     List<Question> loadQuestions(Integer sessionId, Integer status);
     int deleteQuestion(Integer questionId);
     int publish(Integer sessionId);
+    Integer getSessionIdByQuestionId(Integer questionId);
 }
