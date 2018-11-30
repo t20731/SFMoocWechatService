@@ -11,6 +11,9 @@ public class Session {
     private Direction direction;
     private SessionType sessionType;
     private int difficulty;
+    /**
+     * 0 means new session, 1 means started session, -1 means canceled session
+     */
     private int status;
     private String createdDate;
     private String lastModifiedDate;

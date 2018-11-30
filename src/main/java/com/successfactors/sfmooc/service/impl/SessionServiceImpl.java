@@ -46,6 +46,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public int getSessionStatusById(Integer sessionId) {
+        return sessionDAO.getSessionStatusById(sessionId);
+    }
+
+    @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
         return sessionDAO.getSessionList(fetchParams);
     }

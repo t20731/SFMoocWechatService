@@ -30,22 +30,32 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int batchDelete(List<Integer> sessionIdList) {
-        if (CollectionUtils.isEmpty(sessionIdList)) {
-            return 0;
-        }
         StringBuilder deleteUserSessionMap = new StringBuilder("delete from user_session_map where session_id in ");
-        StringBuilder deleteSession = new StringBuilder("delete from session where id in ");
         String whereClause = generateWhereClause(sessionIdList);
         deleteUserSessionMap.append(whereClause);
-        Object[] params = sessionIdList.toArray(new Object[]{sessionIdList.size()});
-        int userSessionCount = jdbcTemplate.update(deleteUserSessionMap.toString(), params);
+        Object[] params = sessionIdList.toArray(new Object[sessionIdList.size()]);
         logger.info("deleteUserSessionMap sql is : " + deleteUserSessionMap);
+        int userSessionCount = jdbcTemplate.update(deleteUserSessionMap.toString(), params);
         logger.info("delete  " + userSessionCount + " records in user_session_map table");
+
+        StringBuilder deleteSession = new StringBuilder("delete from session where id in ");
         deleteSession.append(whereClause);
         logger.info("deleteSession sql is : " + deleteSession);
         int sessionCount = jdbcTemplate.update(deleteSession.toString(), params);
         logger.info("delete  " + sessionCount + " records in session table");
         return sessionCount;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int getSessionStatusById(Integer sessionId) {
+        String query = "select status from session where id = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{sessionId}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("status");
+            }
+        });
     }
 
     private String generateWhereClause(List<Integer> idList) {

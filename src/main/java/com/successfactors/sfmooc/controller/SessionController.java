@@ -133,6 +133,10 @@ public class SessionController {
         if(id == null || id == 0){
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
+        int sessionStatus = sessionService.getSessionStatusById(id);
+        if(sessionStatus != 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
         int status = sessionService.cancel(id);
         return new Result(status, Constants.SUCCESS);
     }

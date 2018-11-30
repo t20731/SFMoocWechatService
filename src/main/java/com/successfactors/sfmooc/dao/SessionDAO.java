@@ -10,6 +10,7 @@ import java.util.List;
 public interface SessionDAO {
 
     int editSession(Session session);
+    int getSessionStatusById(Integer sessionId);
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
