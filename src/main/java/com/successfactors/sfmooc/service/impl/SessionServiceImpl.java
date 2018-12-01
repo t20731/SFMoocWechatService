@@ -46,11 +46,6 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public int getSessionStatusById(Integer sessionId) {
-        return sessionDAO.getSessionStatusById(sessionId);
-    }
-
-    @Override
     public List<Session> getSessionList(FetchParams fetchParams) {
         return sessionDAO.getSessionList(fetchParams);
     }
@@ -68,6 +63,11 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public int batchDelete(List<Integer> sessionIdList) {
         return sessionDAO.batchDelete(sessionIdList);
+    }
+
+    @Override
+    public int singleDelete(Integer sessionId) {
+        return sessionDAO.singleDelete(sessionId);
     }
 
     @Override

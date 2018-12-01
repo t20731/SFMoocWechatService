@@ -128,13 +128,26 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS);
     }
 
+    @RequestMapping(value = "/singleDelete/{id}", method = RequestMethod.DELETE)
+    public Result singleDelete(@PathVariable ("id") Integer id){
+        if(id == null || id == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int enrollments = sessionService.getEnrollments(id);
+        if(enrollments > 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = sessionService.cancel(id);
+        return new Result(status, Constants.SUCCESS);
+    }
+
     @RequestMapping(value = "/cancel/{id}", method = RequestMethod.GET)
     public Result cancel(@PathVariable ("id") Integer id){
         if(id == null || id == 0){
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
-        int sessionStatus = sessionService.getSessionStatusById(id);
-        if(sessionStatus != 0) {
+        int enrollments = sessionService.getEnrollments(id);
+        if(enrollments == 0) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
         int status = sessionService.cancel(id);

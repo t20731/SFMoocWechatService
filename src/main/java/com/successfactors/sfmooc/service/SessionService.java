@@ -10,12 +10,12 @@ import java.util.Set;
 
 public interface SessionService {
     int editSession(Session session);
-    int getSessionStatusById(Integer sessionId);
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
     int getEnrollments(Integer sessionId);
     int batchDelete(List<Integer> sessionIdList);
+    int singleDelete(Integer sessionId);
     int cancel(Integer sessionId);
     int like(String userId, Integer sessionId, Integer like);
     int getLike(String userId, Integer sessionId);

@@ -48,14 +48,13 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int getSessionStatusById(Integer sessionId) {
-        String query = "select status from session where id = ?";
-        return jdbcTemplate.queryForObject(query, new Object[]{sessionId}, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getInt("status");
-            }
-        });
+    public int singleDelete(Integer sessionId) {
+        int userSessionCount = jdbcTemplate.update("delete from user_session_map where session_id = ?",
+                new Object[]{sessionId});
+        logger.info("delete  " + userSessionCount + " records in user_session_map table");
+        int sessionCount = jdbcTemplate.update("delete from session where id = ?", new Object[]{sessionId});
+        logger.info("delete  " + sessionCount + " records in session table");
+        return sessionCount;
     }
 
     private String generateWhereClause(List<Integer> idList) {
