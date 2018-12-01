@@ -14,8 +14,7 @@ public interface SessionService {
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
     int getEnrollments(Integer sessionId);
-    int batchDelete(List<Integer> sessionIdList);
-    int singleDelete(Integer sessionId);
+    int delete(Integer sessionId);
     int cancel(Integer sessionId);
     int like(String userId, Integer sessionId, Integer like);
     int getLike(String userId, Integer sessionId);

@@ -119,16 +119,7 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS, retObj);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public Result batchDelete(@RequestBody List<Integer> sessionIdList){
-        if(CollectionUtils.isEmpty(sessionIdList)){
-            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
-        }
-        int status = sessionService.batchDelete(sessionIdList);
-        return new Result(status, Constants.SUCCESS);
-    }
-
-    @RequestMapping(value = "/singleDelete/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public Result singleDelete(@PathVariable ("id") Integer id){
         if(id == null || id == 0){
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
@@ -137,7 +128,7 @@ public class SessionController {
         if(enrollments > 0) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
-        int status = sessionService.cancel(id);
+        int status = sessionService.delete(id);
         return new Result(status, Constants.SUCCESS);
     }
 

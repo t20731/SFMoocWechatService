@@ -61,13 +61,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public int batchDelete(List<Integer> sessionIdList) {
-        return sessionDAO.batchDelete(sessionIdList);
-    }
-
-    @Override
-    public int singleDelete(Integer sessionId) {
-        return sessionDAO.singleDelete(sessionId);
+    public int delete(Integer sessionId) {
+        return sessionDAO.delete(sessionId);
     }
 
     @Override

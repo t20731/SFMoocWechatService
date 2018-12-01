@@ -29,32 +29,38 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int batchDelete(List<Integer> sessionIdList) {
-        StringBuilder deleteUserSessionMap = new StringBuilder("delete from user_session_map where session_id in ");
-        String whereClause = generateWhereClause(sessionIdList);
-        deleteUserSessionMap.append(whereClause);
-        Object[] params = sessionIdList.toArray(new Object[sessionIdList.size()]);
-        logger.info("deleteUserSessionMap sql is : " + deleteUserSessionMap);
-        int userSessionCount = jdbcTemplate.update(deleteUserSessionMap.toString(), params);
-        logger.info("delete  " + userSessionCount + " records in user_session_map table");
+    public int delete(Integer sessionId) {
+        //delete option
+        List<Integer> questionIdList = getQuestionIdBySessionId(sessionId);
+        StringBuilder deleteOption = new StringBuilder("delete from `option` where question_id in ");
+        String whereClause = generateWhereClause(questionIdList);
+        deleteOption.append(whereClause);
+        Object[] params = questionIdList.toArray(new Object[questionIdList.size()]);
+        logger.info("deleteOption sql is : " + deleteOption);
+        int optionCount = jdbcTemplate.update(deleteOption.toString(), params);
+        logger.info("delete  " + optionCount + " records in option table");
 
-        StringBuilder deleteSession = new StringBuilder("delete from session where id in ");
-        deleteSession.append(whereClause);
-        logger.info("deleteSession sql is : " + deleteSession);
-        int sessionCount = jdbcTemplate.update(deleteSession.toString(), params);
+        //delete question
+        int questionCount = jdbcTemplate.update("delete from question where session_id = ?",
+                new Object[]{sessionId});
+        logger.info("delete  " + questionCount + " records in question table");
+
+        //delete session
+        int sessionCount = jdbcTemplate.update("delete from session where id = ?",
+                new Object[]{sessionId});
         logger.info("delete  " + sessionCount + " records in session table");
         return sessionCount;
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int singleDelete(Integer sessionId) {
-        int userSessionCount = jdbcTemplate.update("delete from user_session_map where session_id = ?",
-                new Object[]{sessionId});
-        logger.info("delete  " + userSessionCount + " records in user_session_map table");
-        int sessionCount = jdbcTemplate.update("delete from session where id = ?", new Object[]{sessionId});
-        logger.info("delete  " + sessionCount + " records in session table");
-        return sessionCount;
+    private List<Integer> getQuestionIdBySessionId(Integer sessionId) {
+        List<Integer> questionIdList = jdbcTemplate.query("select id from question where session_id = ?",
+                new Object[]{sessionId}, new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                        return resultSet.getInt("id");
+                    }
+                });
+        return questionIdList;
     }
 
     private String generateWhereClause(List<Integer> idList) {
