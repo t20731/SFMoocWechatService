@@ -120,7 +120,7 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public Result singleDelete(@PathVariable ("id") Integer id){
+    public Result delete(@PathVariable ("id") Integer id){
         if(id == null || id == 0){
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
