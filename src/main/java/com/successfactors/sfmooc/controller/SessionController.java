@@ -4,6 +4,7 @@ import com.successfactors.sfmooc.domain.*;
 import com.successfactors.sfmooc.service.DirectionService;
 import com.successfactors.sfmooc.service.LocationService;
 import com.successfactors.sfmooc.service.SessionService;
+import com.successfactors.sfmooc.service.UserService;
 import com.successfactors.sfmooc.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class SessionController {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public Result init() {
@@ -71,6 +75,11 @@ public class SessionController {
         }
         List<Session> sessions = sessionService.getSessionList(fetchParams);
         return new Result(1, Constants.SUCCESS, sessions);
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public List<User> getSessionList() {
+        return userService.getUsersByOrder();
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)

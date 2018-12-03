@@ -61,4 +61,26 @@ public class UserDAOImpl implements UserDAO {
         }
         return null;
     }
+
+    @Override
+    public List<User> getUsersByOrder() {
+        String query = "select * from user where `order` is not null order by `order` asc " ;
+        List<User> users = jdbcTemplate.query(query, new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                User user = new User();
+                user.setId(resultSet.getString("id"));
+                user.setNickName(resultSet.getString("nickname"));
+                user.setAvatarUrl(resultSet.getString("avatarUrl"));
+                user.setStatus(resultSet.getInt("status"));
+                user.setDepartment(resultSet.getString("department"));
+                user.setSignature(resultSet.getString("signature"));
+                user.setSeat(resultSet.getString("seat"));
+                user.setBlog(resultSet.getString("blog"));
+                user.setGithub(resultSet.getString("github"));
+                return user;
+            }
+        });
+        return users;
+    }
 }
