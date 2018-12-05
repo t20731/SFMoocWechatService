@@ -30,21 +30,22 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int delete(Integer sessionId) {
-        //delete option
         List<Integer> questionIdList = getQuestionIdBySessionId(sessionId);
-        StringBuilder deleteOption = new StringBuilder("delete from `option` where question_id in ");
-        String whereClause = generateWhereClause(questionIdList);
-        deleteOption.append(whereClause);
-        Object[] params = questionIdList.toArray(new Object[questionIdList.size()]);
-        logger.info("deleteOption sql is : " + deleteOption);
-        int optionCount = jdbcTemplate.update(deleteOption.toString(), params);
-        logger.info("delete  " + optionCount + " records in option table");
-
-        //delete question
-        int questionCount = jdbcTemplate.update("delete from question where session_id = ?",
-                new Object[]{sessionId});
-        logger.info("delete  " + questionCount + " records in question table");
-
+        logger.info("question id is: " + questionIdList.toString());
+        if (questionIdList.size() > 0) {
+            //delete option
+            StringBuilder deleteOption = new StringBuilder("delete from `option` where question_id in ");
+            String whereClause = generateWhereClause(questionIdList);
+            deleteOption.append(whereClause);
+            Object[] params = questionIdList.toArray(new Object[questionIdList.size()]);
+            logger.info("deleteOption sql is : " + deleteOption);
+            int optionCount = jdbcTemplate.update(deleteOption.toString(), params);
+            logger.info("delete  " + optionCount + " records in option table");
+            //delete question
+            int questionCount = jdbcTemplate.update("delete from question where session_id = ?",
+                    new Object[]{sessionId});
+            logger.info("delete  " + questionCount + " records in question table");
+        }
         //delete session
         int sessionCount = jdbcTemplate.update("delete from session where id = ?",
                 new Object[]{sessionId});
