@@ -119,18 +119,26 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS, retObj);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public Result batchDelete(@RequestBody List<Integer> sessionIdList){
-        if(CollectionUtils.isEmpty(sessionIdList)){
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public Result delete(@PathVariable ("id") Integer id){
+        if(id == null || id == 0){
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
-        int status = sessionService.batchDelete(sessionIdList);
+        int enrollments = sessionService.getEnrollments(id);
+        if(enrollments > 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = sessionService.delete(id);
         return new Result(status, Constants.SUCCESS);
     }
 
     @RequestMapping(value = "/cancel/{id}", method = RequestMethod.GET)
     public Result cancel(@PathVariable ("id") Integer id){
         if(id == null || id == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int enrollments = sessionService.getEnrollments(id);
+        if(enrollments == 0) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
         int status = sessionService.cancel(id);

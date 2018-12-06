@@ -14,7 +14,7 @@ public interface SessionDAO {
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
     int getEnrollments(Integer sessionId);
-    int batchDelete(List<Integer> sessionIdList);
+    int delete(Integer sessionId);
     int cancel(Integer sessionId);
     int start(Integer sessionId);
     String getCheckInCode(Integer sessionId);
