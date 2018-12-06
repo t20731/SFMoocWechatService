@@ -31,19 +31,16 @@ public class AnnouncementController {
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public Result editAnnouncement(@RequestBody Announcement announcement) {
-        if(announcement == null || (announcement.getCreatedBy() == null && announcement.getLastModifiedBy() == null)){
+        if (announcement == null || (announcement.getCreatedBy() == null && announcement.getLastModifiedBy() == null)) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
         String userId = announcement.getLastModifiedBy();
         User user = userService.getUserById(userId);
-        if(user != null && user.getStatus() == 2){
-            String encodedContent = Base64Util.encode(announcement.getContent());
-            logger.info("Content after encoded: " + encodedContent);
-            announcement.setContent(encodedContent);
-            int status = announcementService.editAnnouncement(announcement);
-            return new Result(status, Constants.SUCCESS);
-        }
-        return new Result(-1, Constants.NOT_AUTHORIZED);
+        String encodedContent = Base64Util.encode(announcement.getContent());
+        logger.info("Content after encoded: " + encodedContent);
+        announcement.setContent(encodedContent);
+        int status = announcementService.editAnnouncement(announcement);
+        return new Result(status, Constants.SUCCESS);
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
