@@ -13,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -52,5 +54,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public User getUserById(String userId) {
         return userDAO.getUserById(userId);
+    }
+
+    @Override
+    public List<User> getUsersByOrder() {
+        return userDAO.getUsersByOrder();
     }
 }

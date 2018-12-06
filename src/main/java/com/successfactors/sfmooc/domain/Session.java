@@ -21,6 +21,7 @@ public class Session {
     private Integer questionStatus;
     private String tileImageSrc;
     private int likeCount;
+    private int typeId;
 
     private int enrollments;
 
@@ -174,5 +175,9 @@ public class Session {
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
+
+    public int getTypeId(){return typeId;}
+
+    public  void setTypeId(int typeId){this.typeId = typeId;}
 
 }
