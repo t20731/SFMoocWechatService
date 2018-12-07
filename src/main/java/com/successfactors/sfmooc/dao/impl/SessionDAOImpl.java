@@ -187,7 +187,9 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setDirection(direction);
                 session.setTileImageSrc(resultSet.getString("image_Src"));
                 session.setStatus(resultSet.getInt("status"));
-                session.setTypeId(resultSet.getInt("type_id"));
+                SessionType sessionType = new SessionType();
+                sessionType.setId(resultSet.getInt("type_id"));
+                session.setSessionType(sessionType);
                 User user = new User();
                 user.setId(resultSet.getString("uid"));
                 user.setNickName(resultSet.getString("nickname"));
