@@ -54,6 +54,29 @@ public class UserDAOImpl implements UserDAO {
         return users;
     }
 
+    @Override
+    public int editUserInfo(String id, String type, String value) {
+        int status = 0;
+        switch (type) {
+            case "department":
+                status = jdbcTemplate.update("update user set department = ? where id = ?", new Object[]{value, id});
+                break;
+            case "signature":
+                status = jdbcTemplate.update("update user set signature = ? where id = ?", new Object[]{value, id});
+                break;
+            case "seat":
+                status = jdbcTemplate.update("update user set seat = ? where id = ?", new Object[]{value, id});
+                break;
+            case "blog":
+                status = jdbcTemplate.update("update user set blog = ? where id = ?", new Object[]{value, id});
+                break;
+            case "github":
+                status = jdbcTemplate.update("update user set github = ? where id = ?", new Object[]{value, id});
+                break;
+        }
+        return status;
+    }
+
     class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet resultSet, int i) throws SQLException {

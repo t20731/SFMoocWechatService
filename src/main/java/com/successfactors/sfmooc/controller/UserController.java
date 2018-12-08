@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -72,4 +73,15 @@ public class UserController {
         return new Result(0, Constants.SUCCESS, totalPoints);
     }
 
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public Result editUserInfo(@RequestBody Map params) {
+        if (params == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        String id = (String) params.get("id");
+        String type = (String) params.get("type");
+        String value = (String) params.get("value");
+        int status = userService.editUserInfo(id, type, value);
+        return new Result(status, Constants.SUCCESS);
+    }
 }
