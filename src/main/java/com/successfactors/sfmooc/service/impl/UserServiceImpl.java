@@ -60,4 +60,7 @@ public class UserServiceImpl implements UserService{
     public List<User> getUsersByOrder() {
         return userDAO.getUsersByOrder();
     }
+
+    @Override
+    public int editUserInfo(User user) { return userDAO.editUserInfo(user); }
 }

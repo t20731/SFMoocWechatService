@@ -54,6 +54,12 @@ public class UserDAOImpl implements UserDAO {
         return users;
     }
 
+    @Override
+    public int editUserInfo(User user) {
+        return jdbcTemplate.update("update user set department = ?, signature = ?, seat = ?, blog = ?, github = ? where id = ?",
+                new Object[]{user.getDepartment(), user.getSignature(), user.getSeat(), user.getBlog(), user.getGithub(), user.getId()});
+    }
+
     class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet resultSet, int i) throws SQLException {
