@@ -55,26 +55,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public int editUserInfo(String id, String type, String value) {
-        int status = 0;
-        switch (type) {
-            case "department":
-                status = jdbcTemplate.update("update user set department = ? where id = ?", new Object[]{value, id});
-                break;
-            case "signature":
-                status = jdbcTemplate.update("update user set signature = ? where id = ?", new Object[]{value, id});
-                break;
-            case "seat":
-                status = jdbcTemplate.update("update user set seat = ? where id = ?", new Object[]{value, id});
-                break;
-            case "blog":
-                status = jdbcTemplate.update("update user set blog = ? where id = ?", new Object[]{value, id});
-                break;
-            case "github":
-                status = jdbcTemplate.update("update user set github = ? where id = ?", new Object[]{value, id});
-                break;
-        }
-        return status;
+    public int editUserInfo(User user) {
+        return jdbcTemplate.update("update user set department = ?, signature = ?, seat = ?, blog = ?, github = ? where id = ?",
+                new Object[]{user.getDepartment(), user.getSignature(), user.getSeat(), user.getBlog(), user.getGithub(), user.getId()});
     }
 
     class UserRowMapper implements RowMapper<User> {

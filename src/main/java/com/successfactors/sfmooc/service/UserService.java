@@ -8,5 +8,5 @@ public interface UserService {
     public int addUser(User user);
     User getUserById(String userId);
     List<User> getUsersByOrder();
-    int editUserInfo(String id, String type, String value);
+    int editUserInfo(User user);
 }

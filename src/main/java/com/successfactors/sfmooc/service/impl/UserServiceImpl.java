@@ -62,7 +62,5 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int editUserInfo(String id, String type, String value) {
-        return userDAO.editUserInfo(id, type, value);
-    }
+    public int editUserInfo(User user) { return userDAO.editUserInfo(user); }
 }

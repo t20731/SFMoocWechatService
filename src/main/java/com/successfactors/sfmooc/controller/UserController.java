@@ -74,14 +74,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public Result editUserInfo(@RequestBody Map params) {
-        if (params == null) {
+    public Result editUserInfo(@RequestBody User user) {
+        if (user == null) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
-        String id = (String) params.get("id");
-        String type = (String) params.get("type");
-        String value = (String) params.get("value");
-        int status = userService.editUserInfo(id, type, value);
+        int status = userService.editUserInfo(user);
         return new Result(status, Constants.SUCCESS);
     }
 }
