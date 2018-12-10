@@ -231,6 +231,15 @@ public class SessionController {
             return new Result(1, Constants.SUCCESS, like);
         }
     }
+
+    @RequestMapping(value = "/registeredUsers/{sessionId}", method = RequestMethod.GET)
+    public Result getRegisteredUsers(@PathVariable ("sessionId") Integer sessionId){
+        if(sessionId == null || sessionId == 0){
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        List<String> userList = sessionService.getRegisteredUsers(sessionId);
+        return new Result(1, Constants.SUCCESS, userList);
+    }
 //    @RequestMapping(value="/list", method = RequestMethod.GET)
 //    public List<Session> getSessionList(){
 //        return sessionService.getSessionList();

@@ -8,7 +8,6 @@ import com.successfactors.sfmooc.domain.UserSession;
 import java.util.List;
 
 public interface SessionDAO {
-
     int editSession(Session session);
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
@@ -24,4 +23,5 @@ public interface SessionDAO {
     int getSessionLikeCount(Integer sessionId);
     int like(String userId, Integer sessionId, Integer like);
     int getLike(String userId, Integer sessionId);
+    List<String> getRegisteredUsers(Integer sessionId);
 }

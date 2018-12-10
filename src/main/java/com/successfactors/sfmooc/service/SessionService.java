@@ -27,6 +27,7 @@ public interface SessionService {
 //    boolean isSessionOwnerOfToday(String userId);
     Set<String> getAttendeeList(Integer sessionId);
     int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
+    List<String> getRegisteredUsers(Integer sessionId);
 //    List<SessionVO> loadHistorySessions();
 //    String getCurrentSeason();
 }

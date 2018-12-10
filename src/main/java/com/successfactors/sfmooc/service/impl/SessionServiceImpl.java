@@ -173,6 +173,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public List<String> getRegisteredUsers(Integer sessionId) {
+        return sessionDAO.getRegisteredUsers(sessionId);
+    }
+
+    @Override
     public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
         return sessionDAO.updateLuckyNumber(sessionId, luckyNumber);
     }
