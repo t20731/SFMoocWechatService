@@ -13,6 +13,7 @@ public interface SessionService {
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
+    int unRegister(String userId, Integer sessionId);
     int getEnrollments(Integer sessionId);
     int delete(Integer sessionId);
     int cancel(Integer sessionId);
@@ -21,13 +22,7 @@ public interface SessionService {
     int getSessionLikeCount(Integer sessionId );
     String start(String userId, Integer sessionId);
     String getCheckInCode(Integer sessionId);
-//    Session getSessionByDate(String date);
-//    Session getSessionByOwner(String owner);
-//    int updateCheckinCode(Integer sessionId, String checkinCode);
-//    boolean isSessionOwnerOfToday(String userId);
     Set<String> getAttendeeList(Integer sessionId);
     int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
     List<String> getRegisteredUsers(Integer sessionId);
-//    List<SessionVO> loadHistorySessions();
-//    String getCurrentSeason();
 }

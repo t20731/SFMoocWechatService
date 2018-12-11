@@ -12,6 +12,7 @@ public interface SessionDAO {
     List<Session> getSessionList(FetchParams fetchParams);
     UserSession getSessionById(Integer sessionId, String userId);
     int register(String userId, Integer sessionId);
+    int unRegister(String userId, Integer sessionId);
     int getEnrollments(Integer sessionId);
     int delete(Integer sessionId);
     int cancel(Integer sessionId);

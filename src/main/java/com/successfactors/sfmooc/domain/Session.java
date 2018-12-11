@@ -22,8 +22,8 @@ public class Session {
     private String tileImageSrc;
     private int likeCount;
     private int typeId;
-
     private int enrollments;
+    private boolean started;
 
     public Session() {
     }
@@ -180,4 +180,11 @@ public class Session {
 
     public  void setTypeId(int typeId){this.typeId = typeId;}
 
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
 }

@@ -128,6 +128,24 @@ public class SessionController {
         return new Result(status, Constants.SUCCESS, retObj);
     }
 
+    @RequestMapping(value = "/unregister", method = RequestMethod.POST)
+    public Result unRegister(@RequestBody Map paramsMap) {
+        if (paramsMap == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        String userId = (String) paramsMap.get("userId");
+        Integer sessionId = (Integer) paramsMap.get("sessionId");
+        if (StringUtils.isEmpty(userId) || sessionId == 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = sessionService.unRegister(userId, sessionId);
+        if (status > 0) {
+            return new Result(status, Constants.SUCCESS);
+        } else {
+            return new Result(status, Constants.NO_DATA);
+        }
+    }
+
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public Result delete(@PathVariable ("id") Integer id){
         if(id == null || id == 0){

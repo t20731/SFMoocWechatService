@@ -89,6 +89,20 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int unRegister(String userId, Integer sessionId) {
+        int count = getUserSessionCount(userId, sessionId);
+        int result = 0;
+        if (count > 0) {
+            result = jdbcTemplate.update("delete from user_session_map where user_id = ? and session_id = ?",
+                    new Object[]{userId, sessionId});
+        } else {
+            logger.warn("This user didn't register this session");
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int like(String userId, Integer sessionId, Integer like) {
         int count = getUserSessionCount(userId, sessionId);
         int result = 0;
@@ -193,8 +207,12 @@ public class SessionDAOImpl implements SessionDAO {
                 user.setNickName(resultSet.getString("nickname"));
                 user.setAvatarUrl(resultSet.getString("avatarUrl"));
                 session.setOwner(user);
+                String checkInCode = resultSet.getString("checkin_code");
+                if(checkInCode != null){
+                    session.setStarted(true);
+                }
                 if(user.getId() != null && user.getId().equalsIgnoreCase(userId)){
-                    session.setCheckInCode(resultSet.getString("checkin_code"));
+                    session.setCheckInCode(checkInCode);
                 }
                 session.setQuestionStatus(resultSet.getInt("question_status"));
                 return session;
