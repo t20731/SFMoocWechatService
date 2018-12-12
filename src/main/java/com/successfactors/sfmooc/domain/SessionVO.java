@@ -12,6 +12,8 @@ public class SessionVO {
 
     private List<Location> locations;
 
+    private List<Group> groups;
+
     public SessionVO() {
     }
 
@@ -45,5 +47,13 @@ public class SessionVO {
 
     public void setHotSessions(List<Session> hotSessions) {
         this.hotSessions = hotSessions;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 }

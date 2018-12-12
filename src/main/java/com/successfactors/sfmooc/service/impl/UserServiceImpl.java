@@ -3,6 +3,7 @@ package com.successfactors.sfmooc.service.impl;
 import com.successfactors.sfmooc.dao.UserDAO;
 import com.successfactors.sfmooc.domain.LoginBean;
 import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.domain.Group;
 import com.successfactors.sfmooc.service.CacheService;
 import com.successfactors.sfmooc.service.UserService;
 import com.successfactors.sfmooc.utils.WxMappingJackson2HttpMessageConverter;
@@ -59,5 +60,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> getUsersByOrder() {
         return userDAO.getUsersByOrder();
+    }
+
+    @Override
+    public List<Group> getUserGroup(String userId) {
+        return userDAO.getUserGroup(userId);
     }
 }

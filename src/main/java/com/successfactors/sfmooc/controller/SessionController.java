@@ -42,6 +42,19 @@ public class SessionController {
         List<Location> locations = locationService.getAll();
         sessionVO.setDirections(directions);
         sessionVO.setLocations(locations);
+
+        return new Result(1, Constants.SUCCESS, sessionVO);
+    }
+
+    @RequestMapping(value = "/init/{userId}", method = RequestMethod.GET)
+    public Result initWithUserId(@PathVariable ("userId") String id) {
+        SessionVO sessionVO = new SessionVO();
+        List<Direction> directions = directionService.getAll();
+        List<Location> locations = locationService.getAll();
+        List<Group> groups = userService.getUserGroup(id);
+        sessionVO.setDirections(directions);
+        sessionVO.setLocations(locations);
+        sessionVO.setGroups(groups);
         return new Result(1, Constants.SUCCESS, sessionVO);
     }
 

@@ -240,16 +240,16 @@ public class SessionDAOImpl implements SessionDAO {
         Integer sessionId = session.getId();
         if (sessionId != null) {
             String updateSql = "update session set topic = ?, description = ?, start_date = ?, end_date = ?, " +
-                    "location_id = ?, direction_id = ?, difficulty = ?, last_modified_date = ? where id = ?";
+                    "location_id = ?, direction_id = ?, difficulty = ?, last_modified_date = ?, type_id = ? where id = ?";
             return jdbcTemplate.update(updateSql, new Object[]{session.getTopic(), session.getDescription(),
                     session.getStartDate(), session.getEndDate(), session.getLocation().getId(), session.getDirection().getId(),
-                    session.getDifficulty(), now, session.getId()});
+                    session.getDifficulty(), now, session.getTypeId(), session.getId()});
         } else {
             String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location_id, " +
-                    "direction_id, difficulty, image_src, status, created_date, last_modified_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "direction_id, difficulty, image_src, status, created_date, last_modified_date, type_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             return jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
                     session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
-                    session.getDirection().getId(), session.getDifficulty(), session.getTileImageSrc(), 0, now, now});
+                    session.getDirection().getId(), session.getDifficulty(), session.getTileImageSrc(), 0, now, now,session.getTypeId()});
         }
     }
 

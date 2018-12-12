@@ -1,6 +1,6 @@
 package com.successfactors.sfmooc.service;
 
-import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.domain.*;
 import java.util.List;
 
 public interface UserService {
@@ -8,4 +8,5 @@ public interface UserService {
     public int addUser(User user);
     User getUserById(String userId);
     List<User> getUsersByOrder();
+    List<Group> getUserGroup(String userId);
 }
