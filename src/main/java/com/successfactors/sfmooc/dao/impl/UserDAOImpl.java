@@ -1,7 +1,7 @@
 package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.UserDAO;
-import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -60,6 +60,21 @@ public class UserDAOImpl implements UserDAO {
                 new Object[]{user.getDepartment(), user.getSignature(), user.getSeat(), user.getBlog(), user.getGithub(), user.getId()});
     }
 
+    @Override
+    public List<Group> getUserGroup(String userId) {
+        String query = "SELECT id,`name` from `group` g, user_group_map ug where g.id = ug.group_id and ug.user_id = ?" ;
+        List<Group> groups = jdbcTemplate.query(query,new Object[]{userId}, new RowMapper<Group>() {
+            @Override
+            public Group mapRow(ResultSet resultSet, int i) throws SQLException {
+                Group group = new Group();
+                group.setId(resultSet.getInt("id"));
+                group.setName(resultSet.getString("name"));
+                return group;
+            }
+        });
+        return groups;
+    }
+
     class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -75,6 +90,8 @@ public class UserDAOImpl implements UserDAO {
             user.setGithub(resultSet.getString("github"));
             return  user;
         }
+
+
     }
 
 }
