@@ -74,7 +74,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<Group> getUserGroup(String userId) {
-        String query = "SELECT id,`name` from sfmooc.`group` g,sfmooc.user_group_map ug where g.id = ug.group_id and ug.user_id = ?" ;
+        String query = "SELECT id,`name` from `group` g, user_group_map ug where g.id = ug.group_id and ug.user_id = ?" ;
         List<Group> groups = jdbcTemplate.query(query,new Object[]{userId}, new RowMapper<Group>() {
             @Override
             public Group mapRow(ResultSet resultSet, int i) throws SQLException {
