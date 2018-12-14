@@ -114,4 +114,9 @@ public class SessionServiceImpl implements SessionService {
     public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
         return sessionDAO.updateLuckyNumber(sessionId, luckyNumber);
     }
+
+    @Override
+    public List<Session> getSessionRankingList(int typeId) {
+        return sessionDAO.getSessionRankingList(typeId);
+    }
 }

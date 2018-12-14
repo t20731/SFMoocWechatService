@@ -25,4 +25,5 @@ public interface SessionService {
     Set<String> getAttendeeList(Integer sessionId);
     int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
     List<String> getRegisteredUsers(Integer sessionId);
+    List<Session> getSessionRankingList(int typeId);
 }
