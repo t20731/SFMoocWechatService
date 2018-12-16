@@ -226,15 +226,19 @@ public class SessionController {
         if (like != 0 && like != 1){
             return new Result(-1, Constants.ILLEGAL_ARGUMENT, null);
         }
-
-        int result = sessionService.like(userId, sessionId, like);
-        if(result == 0){
-            return new Result(-1, Constants.ERROR);
+        Set<String> userList = sessionService.getAttendeeList(sessionId);
+        if (userList != null && userList.contains(userId)) {
+            int result = sessionService.like(userId, sessionId, like);
+            if(result == 0){
+                return new Result(-1, Constants.ERROR);
+            }
+            Map<String, Object> retObj = new HashMap<>(1);
+            retObj.put("updatedRowCount", result);
+            retObj.put("returnedLike", like);
+            return new Result(1, Constants.SUCCESS, retObj);
+        } else {
+            return new Result(0, Constants.ERROR, 0);
         }
-        Map<String, Object> retObj = new HashMap<>(1);
-        retObj.put("updatedRowCount", result);
-        retObj.put("returnedLike", like);
-        return new Result(1, Constants.SUCCESS, retObj);
     }
 
     @RequestMapping(value = "/getlike", method = RequestMethod.POST)

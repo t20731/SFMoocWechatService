@@ -191,7 +191,8 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setTopic(resultSet.getString("topic"));
                 session.setDescription(resultSet.getString("description"));
                 session.setStartDate(DateUtil.formatDateToMinutes(resultSet.getString("start_date")));
-                session.setEndDate(DateUtil.formatDateToMinutes(resultSet.getString("end_date")));
+                String endDate = DateUtil.formatDateToMinutes(resultSet.getString("end_date"));
+                session.setEndDate(endDate);
                 session.setDifficulty(resultSet.getInt("difficulty"));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
@@ -210,13 +211,19 @@ public class SessionDAOImpl implements SessionDAO {
                 user.setAvatarUrl(resultSet.getString("avatarUrl"));
                 session.setOwner(user);
                 String checkInCode = resultSet.getString("checkin_code");
+                //started session
                 if(checkInCode != null){
-                    session.setStarted(true);
+                    session.setStatus(1);
                 }
                 if(user.getId() != null && user.getId().equalsIgnoreCase(userId)){
                     session.setCheckInCode(checkInCode);
                 }
                 session.setQuestionStatus(resultSet.getInt("question_status"));
+                String today = DateUtil.formatDateToMinutes(new Date());
+                //completed session
+                if(today.compareTo(endDate) > 0){
+                    session.setStatus(2);
+                }
                 return session;
             }
         });
