@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.controller;
 
+import com.successfactors.sfmooc.domain.Group;
 import com.successfactors.sfmooc.domain.Result;
 import com.successfactors.sfmooc.domain.User;
 import com.successfactors.sfmooc.service.RankingService;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -80,5 +81,14 @@ public class UserController {
         }
         int status = userService.editUserInfo(user);
         return new Result(status, Constants.SUCCESS);
+    }
+
+    @RequestMapping(value = "/groups/{id}", method = RequestMethod.GET)
+    public Result getUserGroups(@PathVariable("id") String id) {
+        if (StringUtils.isEmpty(id)) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        List<Group> groups = userService.getUserGroup(id);
+        return new Result(0, Constants.SUCCESS, groups);
     }
 }

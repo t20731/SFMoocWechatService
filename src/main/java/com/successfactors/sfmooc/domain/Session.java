@@ -9,7 +9,7 @@ public class Session {
     private String endDate;
     private Location location;
     private Direction direction;
-    private SessionType sessionType;
+    private Group group;
     private int difficulty;
     /**
      * 0 means new session, 1 means started session
@@ -96,12 +96,12 @@ public class Session {
         this.direction = direction;
     }
 
-    public SessionType getSessionType() {
-        return sessionType;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setSessionType(SessionType sessionType) {
-        this.sessionType = sessionType;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public int getDifficulty() {
