@@ -180,7 +180,7 @@ public class SessionDAOImpl implements SessionDAO {
     public UserSession getSessionById(Integer sessionId, String userId) {
         String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.difficulty, s.checkin_code, s.question_status, "+
                 "d.name as direction, l.name as location, s.status, s.image_src, " +
-                "u.id as uid, u.nickname, u.avatarUrl, g.name as g_name from user u, direction d, location l, session s, `group` g where s.owner = u.id " +
+                "u.id as uid, u.nickname, u.avatarUrl, g.id as g_id, g.name as g_name from user u, direction d, location l, session s, `group` g where s.owner = u.id " +
                 "and s.direction_id = d.id and s.location_id = l.id and s.type_id = g.id and s.id = ? ";
         List<Session> sessions = jdbcTemplate.query(query, new Object[]{sessionId}, new RowMapper<Session>() {
             @Nullable
@@ -203,6 +203,7 @@ public class SessionDAOImpl implements SessionDAO {
                 session.setTileImageSrc(resultSet.getString("image_Src"));
                 session.setStatus(resultSet.getInt("status"));
                 Group group = new Group();
+                group.setId(resultSet.getInt("g_id"));
                 group.setName(resultSet.getString("g_name"));
                 session.setGroup(group);
                 User user = new User();
