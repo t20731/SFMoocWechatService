@@ -296,6 +296,8 @@ public class SessionDAOImpl implements SessionDAO {
                 "on s1.id = usmap.session_id) a group by a.id) b " +
                 " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and s2.id = b.id ";
         StringBuilder sb = new StringBuilder(query);
+        String owner = fetchParams.getOwnerId();
+        String userId = fetchParams.getUserId();
         int direction = fetchParams.getDirectionId();
         if (direction > 0) {
             sb.append("and s2.direction_id = ? ");
@@ -306,12 +308,9 @@ public class SessionDAOImpl implements SessionDAO {
             sb.append("and s2.difficulty = ? ");
             params.add(difficulty);
         }
-        int status = fetchParams.getStatus();
-        if (status != -1) {
-            sb.append("and s2.status = ? ");
-            params.add(status);
+        if (owner == null && userId == null) {
+            sb.append("and s2.status != -1 ");
         }
-        String owner = fetchParams.getOwnerId();
         if (owner != null) {
             sb.append("and s2.owner = ? ");
             params.add(owner);
@@ -327,7 +326,6 @@ public class SessionDAOImpl implements SessionDAO {
         } else {
             sb.append("and s2.end_date >= now() ");
         }
-        String userId = fetchParams.getUserId();
         if (userId != null) {
             sb = new StringBuilder("select s.* from (").append(sb.toString()).append(") s, user_session_map usmap1 " +
                     "where s.sid = usmap1.session_id and usmap1.user_id = ? ");
