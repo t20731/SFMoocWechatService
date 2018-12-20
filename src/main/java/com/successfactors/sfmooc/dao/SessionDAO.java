@@ -1,9 +1,6 @@
 package com.successfactors.sfmooc.dao;
 
-import com.successfactors.sfmooc.domain.FetchParams;
-import com.successfactors.sfmooc.domain.Session;
-import com.successfactors.sfmooc.domain.SessionVO;
-import com.successfactors.sfmooc.domain.UserSession;
+import com.successfactors.sfmooc.domain.*;
 
 import java.util.List;
 
@@ -25,4 +22,5 @@ public interface SessionDAO {
     int like(String userId, Integer sessionId, Integer like);
     int getLike(String userId, Integer sessionId);
     List<String> getRegisteredUsers(Integer sessionId);
+    List<Session> getSessionRankingList(int typeId);
 }
