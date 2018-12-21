@@ -118,9 +118,9 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public List<RankingSession> getSessionRankingList(int typeId) {
+    public List<RankingSession> getSessionRankingList(int group) {
         List<RankingSession> rankingSessions = new ArrayList<>();
-        List<Session> sessions = sessionDAO.getSessionRankingList(typeId);
+        List<Session> sessions = sessionDAO.getSessionRankingList(group);
         int i =0;
          for (Session session : sessions){
              RankingSession rankingSession = new RankingSession();

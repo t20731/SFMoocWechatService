@@ -65,8 +65,8 @@ public class RankingController {
     }
 
     @RequestMapping(value="/listSession/{group}", method = RequestMethod.GET)
-    public List<RankingSession> getSessionRankingList(@PathVariable ("group") int typeId){
-        return sessionService.getSessionRankingList(typeId);
+    public List<RankingSession> getSessionRankingList(@PathVariable ("group") int group){
+        return sessionService.getSessionRankingList(group);
     }
 
     

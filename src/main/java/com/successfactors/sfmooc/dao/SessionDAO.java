@@ -22,5 +22,5 @@ public interface SessionDAO {
     int like(String userId, Integer sessionId, Integer like);
     int getLike(String userId, Integer sessionId);
     List<String> getRegisteredUsers(Integer sessionId);
-    List<Session> getSessionRankingList(int typeId);
+    List<Session> getSessionRankingList(int group);
 }
