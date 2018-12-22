@@ -41,7 +41,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User getUserById(String userId) {
-        String query = "select id, nickname, avatarUrl, status, department, signature, seat, " +
+        String query = "select id, nickname, gender, avatarUrl, status, department, signature, seat, " +
                 "blog, github from user where id = ?";
         List<User> users = jdbcTemplate.query(query, new Object[]{userId}, new UserRowMapper());
         if(users != null && !users.isEmpty()){
@@ -84,6 +84,7 @@ public class UserDAOImpl implements UserDAO {
             User user = new User();
             user.setId(resultSet.getString("id"));
             user.setNickName(resultSet.getString("nickname"));
+            user.setGender(resultSet.getInt("gender"));
             user.setAvatarUrl(resultSet.getString("avatarUrl"));
             user.setStatus(resultSet.getInt("status"));
             user.setDepartment(resultSet.getString("department"));
