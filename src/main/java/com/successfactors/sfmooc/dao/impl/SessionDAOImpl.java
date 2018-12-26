@@ -437,11 +437,23 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public List<Session> getSessionRankingList(int group) {
-        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, s2.end_date, l.name as location, s2.direction_id, s2.image_src, s2.status, s2.created_date, " +
-                "s2.last_modified_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
-                "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
-                "on s1.id = usmap.session_id where usmap.like = 1) a group by a.id) b " +
-                " where s2.owner = u.id and s2.direction_id = d.id and s2.location_id = l.id and s2.id = b.id and s2.type_id = " + group +" order by total_members desc";
-        return executeSessionQuery(query, null);
+           String query ="select s.id, s.topic, s.image_src, u.id as uid, u.nickname, numOflike from session s, user u, " +
+                "(select session_id, sum(`like`) as numOflike from user_session_map group by session_id) a " +
+                "where s.id = a.session_id and s.owner = u.id and s.type_id =? and s.checkin_code is not null order by numOflike desc";
+        return jdbcTemplate.query(query, new Object[]{group}, new RowMapper<Session>() {
+            @Override
+            public Session mapRow(ResultSet resultSet, int i) throws SQLException {
+                Session session = new Session();
+                session.setId(resultSet.getInt("id"));
+                session.setTopic(resultSet.getString("topic"));
+                session.setTileImageSrc(resultSet.getString("image_Src"));
+                User user = new User();
+                user.setId(resultSet.getString("uid"));
+                user.setNickName(resultSet.getString("nickname"));
+                session.setOwner(user);
+                session.setLikeCount(resultSet.getInt("numOflike"));
+                return session;
+            }
+        });
     }
 }
