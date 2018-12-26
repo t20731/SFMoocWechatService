@@ -436,11 +436,11 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
-    public List<Session> getSessionRankingList(int group) {
+    public List<Session> getSessionRankingList(int groupId) {
            String query ="select s.id, s.topic, s.image_src, u.id as uid, u.nickname, numOflike from session s, user u, " +
                 "(select session_id, sum(`like`) as numOflike from user_session_map group by session_id) a " +
                 "where s.id = a.session_id and s.owner = u.id and s.type_id =? and s.checkin_code is not null order by numOflike desc";
-        return jdbcTemplate.query(query, new Object[]{group}, new RowMapper<Session>() {
+        return jdbcTemplate.query(query, new Object[]{groupId}, new RowMapper<Session>() {
             @Override
             public Session mapRow(ResultSet resultSet, int i) throws SQLException {
                 Session session = new Session();
