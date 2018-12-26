@@ -1,9 +1,6 @@
 package com.successfactors.sfmooc.service;
 
-import com.successfactors.sfmooc.domain.FetchParams;
-import com.successfactors.sfmooc.domain.Session;
-import com.successfactors.sfmooc.domain.SessionVO;
-import com.successfactors.sfmooc.domain.UserSession;
+import com.successfactors.sfmooc.domain.*;
 
 import java.util.List;
 import java.util.Set;
@@ -25,4 +22,5 @@ public interface SessionService {
     Set<String> getAttendeeList(Integer sessionId);
     int updateLuckyNumber(Integer sessionId, Integer luckyNumber);
     List<String> getRegisteredUsers(Integer sessionId);
+    List<RankingSession> getSessionRankingList(int group);
 }

@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.service.impl;
 
 import com.successfactors.sfmooc.dao.SessionDAO;
 import com.successfactors.sfmooc.domain.FetchParams;
+import com.successfactors.sfmooc.domain.RankingSession;
 import com.successfactors.sfmooc.domain.Session;
 import com.successfactors.sfmooc.domain.UserSession;
 import com.successfactors.sfmooc.service.CheckinService;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -113,5 +115,19 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
         return sessionDAO.updateLuckyNumber(sessionId, luckyNumber);
+    }
+
+    @Override
+    public List<RankingSession> getSessionRankingList(int group) {
+        List<RankingSession> rankingSessions = new ArrayList<>();
+        List<Session> sessions = sessionDAO.getSessionRankingList(group);
+        int i =0;
+         for (Session session : sessions){
+             RankingSession rankingSession = new RankingSession();
+             rankingSession.setRank(++i);
+             rankingSession.setSession(session);
+             rankingSessions.add(rankingSession);
+         }
+         return rankingSessions;
     }
 }

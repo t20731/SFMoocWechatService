@@ -440,4 +440,26 @@ public class SessionDAOImpl implements SessionDAO {
     public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
         return jdbcTemplate.update("update session set lucky_number = ? where id = ?", new Object[]{luckyNumber, sessionId});
     }
+
+    @Override
+    public List<Session> getSessionRankingList(int groupId) {
+           String query ="select s.id, s.topic, s.image_src, u.id as uid, u.nickname, numOflike from session s, user u, " +
+                "(select session_id, sum(`like`) as numOflike from user_session_map group by session_id) a " +
+                "where s.id = a.session_id and s.owner = u.id and s.type_id =? and s.checkin_code is not null order by numOflike desc";
+        return jdbcTemplate.query(query, new Object[]{groupId}, new RowMapper<Session>() {
+            @Override
+            public Session mapRow(ResultSet resultSet, int i) throws SQLException {
+                Session session = new Session();
+                session.setId(resultSet.getInt("id"));
+                session.setTopic(resultSet.getString("topic"));
+                session.setTileImageSrc(resultSet.getString("image_Src"));
+                User user = new User();
+                user.setId(resultSet.getString("uid"));
+                user.setNickName(resultSet.getString("nickname"));
+                session.setOwner(user);
+                session.setLikeCount(resultSet.getInt("numOflike"));
+                return session;
+            }
+        });
+    }
 }

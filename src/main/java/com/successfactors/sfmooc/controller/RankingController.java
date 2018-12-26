@@ -1,9 +1,6 @@
 package com.successfactors.sfmooc.controller;
 
-import com.successfactors.sfmooc.domain.Points;
-import com.successfactors.sfmooc.domain.RankingItem;
-import com.successfactors.sfmooc.domain.Result;
-import com.successfactors.sfmooc.domain.User;
+import com.successfactors.sfmooc.domain.*;
 import com.successfactors.sfmooc.service.RankingService;
 import com.successfactors.sfmooc.service.SessionService;
 import com.successfactors.sfmooc.service.UserService;
@@ -65,6 +62,11 @@ public class RankingController {
             return new Result(1, Constants.SUCCESS, retObj);
         }
         return new Result(-1, Constants.NOT_AUTHORIZED);
+    }
+
+    @RequestMapping(value="/listSession/{group}", method = RequestMethod.GET)
+    public List<RankingSession> getSessionRankingList(@PathVariable ("group") int group){
+        return sessionService.getSessionRankingList(group);
     }
 
     
