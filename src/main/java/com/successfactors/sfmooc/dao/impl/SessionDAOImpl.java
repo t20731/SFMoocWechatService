@@ -290,7 +290,7 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     public String buildSessionQuery(FetchParams fetchParams, List<Object> params) {
-        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, s2.end_date, l.name as location, s2.direction_id, s2.image_src, s2.status, s2.created_date, " +
+        String query = "select s2.id as sid, s2.topic, s2.difficulty, s2.start_date, s2.end_date, s2.checkin_code, l.name as location, s2.direction_id, s2.image_src, s2.status, s2.created_date, " +
                 "s2.last_modified_date, u.id as uid, u.nickname, b.total_members from user u, session s2, direction d, location l, " +
                 "(select a.id, count(a.user_id) as total_members  from (select s1.id, usmap.user_id from session s1 left outer join user_session_map usmap " +
                 "on s1.id = usmap.session_id) a group by a.id) b " +
@@ -403,6 +403,18 @@ public class SessionDAOImpl implements SessionDAO {
                 user.setNickName(resultSet.getString("nickname"));
                 session.setOwner(user);
                 session.setEnrollments(resultSet.getInt("total_members"));
+                String checkInCode = resultSet.getString("checkin_code");
+                //started session
+                if(checkInCode != null){
+                    session.setStatus(1);
+                }
+                String today = DateUtil.formatDateToMinutes(new Date());
+                String endDate = DateUtil.formatDateToMinutes(resultSet.getString("end_date"));
+                session.setEndDate(endDate);
+                //completed session
+                if(today.compareTo(endDate) > 0){
+                    session.setStatus(2);
+                }
                 return session;
             }
         });
