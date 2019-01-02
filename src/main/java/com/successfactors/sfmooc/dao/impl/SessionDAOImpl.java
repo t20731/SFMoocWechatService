@@ -119,8 +119,8 @@ public class SessionDAOImpl implements SessionDAO {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int getSessionLikeCount(Integer sessionId ){
         int count;
-        List<Integer> result =  jdbcTemplate.query("select count(1) as cnt from user_session_map where " +
-                "session_id = ? and `like` = 1", new Object[]{sessionId}, new RowMapper<Integer>() {
+        List<Integer> result =  jdbcTemplate.query("select sum(`like`) as cnt from user_session_map where " +
+                "session_id = ? ", new Object[]{sessionId}, new RowMapper<Integer>() {
             @Nullable
             @Override
             public Integer mapRow(ResultSet resultSet, int i) throws SQLException {

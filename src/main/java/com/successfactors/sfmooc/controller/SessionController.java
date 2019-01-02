@@ -115,9 +115,9 @@ public class SessionController {
         } else {
             int enrollments = sessionService.getEnrollments(enrollment.getSessionId());
             session.getSession().setEnrollments(enrollments);
+            int sessionCount = sessionService.getSessionLikeCount(enrollment.getSessionId());
+            session.getSession().setLikeCount(sessionCount);
             if(session.isUserRegistered()){
-                int sessionCount = sessionService.getSessionLikeCount(enrollment.getSessionId());
-                session.getSession().setLikeCount(sessionCount);
                 int userLike = sessionService.getLike( enrollment.getUserId(),enrollment.getSessionId());
                 session.setUserLike(userLike);
             }
