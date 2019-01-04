@@ -61,6 +61,35 @@ public class PointsDAOImpl implements PointsDAO{
     }
 
     @Override
+    public List<RankingItem> getUserRankingListByGroupId(String season,int groupId){
+        if(groupId == 0){
+            return this.getUserRankingList(season);
+        }
+
+        String query = "select a.id, a.nickname, a.avatarUrl, ifnull(b.session_points, 0)  as total_points " +
+                "from  (select id, nickname, avatarUrl from user, user_group_map ugm where user.id = ugm.user_id and ugm.group_id = ?) a " +
+                "left outer join " +
+                "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0))+sum(ifnull(lottery, 0)) as session_points from points p, session s,user_group_map um " +
+                " where p.session_id = s.id and s.type_id = ? group by p.user_id) b " +
+                "on a.id = b.user_id order by total_points desc";
+
+        return jdbcTemplate.query(query, new Object[]{groupId, groupId}, new RowMapper<RankingItem>() {
+            @Override
+            public RankingItem mapRow(ResultSet resultSet, int i) throws SQLException {
+                RankingItem rankingItem = new RankingItem();
+                rankingItem.setRank(i+1);
+                rankingItem.setUserId(resultSet.getString("id"));
+                rankingItem.setNickname(resultSet.getString("nickname"));
+                rankingItem.setAvatarUrl(resultSet.getString("avatarUrl"));
+                rankingItem.setPoints(resultSet.getInt("total_points"));
+                return rankingItem;
+            }
+        });
+    }
+
+
+
+    @Override
     public List<Points> getPointsDetailForUser(String userId) {
         String query = "select start_date, checkin, host, exam, lottery from points p, session s " +
                 "where p.session_id = s.id and p.user_id = ? order by start_date desc";

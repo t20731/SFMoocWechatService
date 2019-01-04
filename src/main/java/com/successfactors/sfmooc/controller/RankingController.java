@@ -34,8 +34,13 @@ public class RankingController {
     private UserService userService;
 
     @RequestMapping(value="/list", method = RequestMethod.GET)
-    public List<RankingItem> getRankingList(){
+    public List<RankingItem> getRankingListBySeason(){
         return rankingService.getRankingListBySeason("S1");
+    }
+
+    @RequestMapping(value = "/list/{groupId}", method = RequestMethod.GET)
+    public List<RankingItem> getRankingListByGroup(@PathVariable ("groupId") int groupId){
+        return rankingService.getRankingListByGroupId("S1", groupId);
     }
 
     @RequestMapping(value="/points/{userId}", method = RequestMethod.GET)
