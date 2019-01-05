@@ -262,9 +262,9 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int editSession(Session session) {
-        String now = DateUtil.formatDateTime(new Date());
-        Integer sessionId = session.getId();
-        if (sessionId != null) {
+            String now = DateUtil.formatDateTime(new Date());
+            Integer sessionId = session.getId();
+            if (sessionId != null) {
             String updateSql = "update session set topic = ?, description = ?, start_date = ?, end_date = ?, " +
                     "location_id = ?, direction_id = ?, difficulty = ?, last_modified_date = ?, type_id = ? where id = ?";
             return jdbcTemplate.update(updateSql, new Object[]{session.getTopic(), session.getDescription(),

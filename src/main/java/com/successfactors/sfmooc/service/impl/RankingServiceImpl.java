@@ -20,6 +20,11 @@ public class RankingServiceImpl implements RankingService{
     }
 
     @Override
+    public List<RankingItem> getRankingListByGroupId(String season,int groupId) {
+        return pointsDAO.getUserRankingListByGroupId(season,groupId);
+    }
+
+    @Override
     public List<Points> getPointsDetailForUser(String userId) {
         return pointsDAO.getPointsDetailForUser(userId);
     }

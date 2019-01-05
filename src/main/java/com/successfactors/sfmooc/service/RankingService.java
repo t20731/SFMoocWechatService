@@ -8,6 +8,7 @@ import java.util.List;
 public interface RankingService {
 
     List<RankingItem> getRankingListBySeason(String season);
+    List<RankingItem> getRankingListByGroupId(String season, int groupId);
     List<Points> getPointsDetailForUser(String userId);
     int updatePointsForHost(Integer sessionId, String userId);
     int updatePointsForCheckin(Integer sessionId, String userId);
