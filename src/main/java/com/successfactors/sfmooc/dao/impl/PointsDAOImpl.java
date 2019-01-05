@@ -69,7 +69,7 @@ public class PointsDAOImpl implements PointsDAO{
         String query = "select a.id, a.nickname, a.avatarUrl, ifnull(b.session_points, 0)  as total_points " +
                 "from  (select id, nickname, avatarUrl from user, user_group_map ugm where user.id = ugm.user_id and ugm.group_id = ?) a " +
                 "left outer join " +
-                "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0))+sum(ifnull(lottery, 0)) as session_points from points p, session s,user_group_map um " +
+                "  (select p.user_id, sum(checkin)+sum(host)+sum(ifnull(exam,0))+sum(ifnull(lottery, 0)) as session_points from points p, session s " +
                 " where p.session_id = s.id and s.type_id = ? group by p.user_id) b " +
                 "on a.id = b.user_id order by total_points desc";
 
