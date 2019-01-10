@@ -38,4 +38,6 @@ public class Constants {
 
     public static final int  MIN_MEMBERS = 1;
 
+    public static final String DEFAULT_USER_ID = "abc";
+
 }

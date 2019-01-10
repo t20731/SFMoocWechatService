@@ -30,4 +30,22 @@ public class GroupDAOImpl implements GroupDAO {
         });
         return groups;
     }
- }
+
+    @Override
+    public boolean isUserInGroup(String userId, Integer groupId) {
+        int count = jdbcTemplate.queryForObject("select count(1) as cnt from user_group_map " +
+                "where user_id = ? and group_id = ?", new Object[]{userId, groupId}, new RowMapper<Integer>(){
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("cnt");
+            }
+        });
+        return count == 1 ? true : false;
+    }
+
+    @Override
+    public int addUserToGroup(String userId, Integer groupId) {
+        return jdbcTemplate.update("replace into user_group_map(user_id, group_id) values (?, ?)",
+                new Object[]{userId, groupId});
+    }
+}
