@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.GroupDAO;
 import com.successfactors.sfmooc.domain.Group;
+import com.successfactors.sfmooc.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -45,7 +47,8 @@ public class GroupDAOImpl implements GroupDAO {
 
     @Override
     public int addUserToGroup(String userId, Integer groupId) {
-        return jdbcTemplate.update("replace into user_group_map(user_id, group_id) values (?, ?)",
-                new Object[]{userId, groupId});
+        String now = DateUtil.formatDateTime(new Date());
+        return jdbcTemplate.update("replace into user_group_map(user_id, group_id, join_date) values (?, ?, ?)",
+                new Object[]{userId, groupId, now});
     }
 }

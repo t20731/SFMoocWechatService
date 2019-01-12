@@ -91,4 +91,9 @@ public class UserController {
         List<Group> groups = userService.getUserGroup(id);
         return new Result(0, Constants.SUCCESS, groups);
     }
+
+    @RequestMapping(value = "/orderList", method = RequestMethod.GET)
+    public List<User> getOrderList() {
+        return userService.getUsersByOrder();
+    }
 }

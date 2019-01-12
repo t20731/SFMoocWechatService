@@ -1,10 +1,12 @@
 package com.successfactors.sfmooc.dao.impl;
 
+import com.successfactors.sfmooc.dao.GroupDAO;
 import com.successfactors.sfmooc.dao.UserDAO;
 import com.successfactors.sfmooc.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -16,6 +18,9 @@ public class UserDAOImpl implements UserDAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private GroupDAO groupDAO;
 
     @Override
     public int addUser(User user) {
@@ -29,9 +34,8 @@ public class UserDAOImpl implements UserDAO {
         if (userCnt == 0) {
             int status = jdbcTemplate.update("insert into user(id, nickname, gender, avatarUrl, status) values (?, ?, ?, ?, ?)",
                     new Object[]{id, user.getNickName(), user.getGender(), user.getAvatarUrl(), user.getStatus()});
-            status += jdbcTemplate.update("insert into user_group_map(user_id, group_id) values (?, ?)", new Object[]{id, 0});
+            status += groupDAO.addUserToGroup(id, 0);
             return status;
-
         } else if (userCnt == 1) {
             return jdbcTemplate.update("update user set nickname = ?, gender = ?, avatarUrl = ? where id = ?",
                     new Object[]{user.getNickName(), user.getGender(), user.getAvatarUrl(), id});
@@ -52,8 +56,20 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> getUsersByOrder() {
-        String query = "select * from user where `order` is not null order by `order` asc " ;
-        List<User> users = jdbcTemplate.query(query, new UserRowMapper());
+        String query = "select u.id, u.avatarUrl, u.nickname, u.signature from user u, user_group_map ug " +
+                "where u.id = ug.user_id and ug.group_id = 1 order by join_date";
+        List<User> users = jdbcTemplate.query(query, new RowMapper<User>() {
+            @Nullable
+            @Override
+            public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                User user = new User();
+                user.setId(resultSet.getString("id"));
+                user.setAvatarUrl(resultSet.getString("avatarUrl"));
+                user.setNickName(resultSet.getString("nickname"));
+                user.setSignature(resultSet.getString("signature"));
+                return user;
+            }
+        });
         return users;
     }
 

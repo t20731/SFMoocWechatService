@@ -90,11 +90,6 @@ public class SessionController {
         return new Result(1, Constants.SUCCESS, sessions);
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<User> getSessionList() {
-        return userService.getUsersByOrder();
-    }
-
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public Result editSession(@RequestBody Session session) {
         logger.info("session start_date: " + session.getStartDate());
