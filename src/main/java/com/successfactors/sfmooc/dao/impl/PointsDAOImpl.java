@@ -2,22 +2,29 @@ package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.LotteryDAO;
 import com.successfactors.sfmooc.dao.PointsDAO;
+import com.successfactors.sfmooc.domain.LuckyDog;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
 import com.successfactors.sfmooc.utils.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class PointsDAOImpl implements PointsDAO{
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -135,17 +142,23 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int updatePointsForLottery(Integer sessionId, Integer luckyNumber) {
-        int result = jdbcTemplate.update("update points set lottery = 0 where session_id = ? and bet_number != ?",
-                new Object[]{sessionId, luckyNumber});
-
-        List<String> luckyUsers = lotteryDAO.getLuckyDogs(sessionId,luckyNumber);
-        for (String luckyUser : luckyUsers){
-            int point = getLotteryPointForUser(luckyUser);
-            result = jdbcTemplate.update("update points set lottery = ? where session_id = ? and bet_number = ?",
-                    new Object[]{point, sessionId, luckyNumber});
-        }
-        return result;
+    public int updatePointsForLottery(Integer sessionId, List<LuckyDog> luckyDogs) {
+        int[] updateResult = jdbcTemplate.batchUpdate("update points set lottery = ? where session_id = ? and user_id = ?",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        for (LuckyDog luckyDog : luckyDogs){
+                            ps.setInt(1, luckyDog.getPoints());
+                            ps.setInt(2, sessionId);
+                            ps.setString(3, luckyDog.getUserId());
+                        }
+                    }
+                    @Override
+                    public int getBatchSize() {
+                        return luckyDogs.size();
+                    }
+                });
+        return updateResult.length;
     }
 
     private int getSessionCount(Integer sessionId, String userId){
@@ -199,19 +212,4 @@ public class PointsDAOImpl implements PointsDAO{
         }
     }
 
-    private int getLotteryPointForUser(String userId){
-        int count = jdbcTemplate.queryForObject("select count(1) as cnt from points where user_id = ?" +
-                " and lottery > 0", new Object[]{userId}, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
-                return resultSet.getInt("cnt");
-            }
-        });
-        if (count >= 5){
-            return 1;
-        }else{
-            return 5-count;
-        }
-
-    }
 }

@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.service;
 
+import com.successfactors.sfmooc.domain.LuckyDog;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
 
@@ -12,7 +13,7 @@ public interface RankingService {
     List<Points> getPointsDetailForUser(String userId);
     int updatePointsForHost(Integer sessionId, String userId);
     int updatePointsForCheckin(Integer sessionId, String userId);
-    int updatePointsForLottery(Integer sessionId, Integer luckyNumber);
+    int updatePointsForLottery(Integer sessionId, List<LuckyDog> luckyDogs);
     int getTotalPoints(String userId);
 
 }

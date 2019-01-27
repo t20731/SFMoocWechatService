@@ -5,13 +5,13 @@ import java.util.List;
 public class LotteryResult {
 
     private Integer luckyNumber;
-    private List<String> luckyDogs;
+    private List<LuckyDog> luckyDogs;
 
     public LotteryResult(){
 
     }
 
-    public LotteryResult(Integer luckyNumber, List<String> luckyDogs){
+    public LotteryResult(Integer luckyNumber, List<LuckyDog>  luckyDogs){
         this.luckyNumber = luckyNumber;
         this.luckyDogs = luckyDogs;
     }
@@ -24,11 +24,11 @@ public class LotteryResult {
         this.luckyNumber = luckyNumber;
     }
 
-    public List<String> getLuckyDogs() {
+    public List<LuckyDog> getLuckyDogs() {
         return luckyDogs;
     }
 
-    public void setLuckyDogs(List<String> luckyDogs) {
+    public void setLuckyDogs(List<LuckyDog> luckyDogs) {
         this.luckyDogs = luckyDogs;
     }
 }

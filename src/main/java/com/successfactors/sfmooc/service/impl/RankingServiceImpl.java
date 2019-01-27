@@ -1,6 +1,7 @@
 package com.successfactors.sfmooc.service.impl;
 
 import com.successfactors.sfmooc.dao.PointsDAO;
+import com.successfactors.sfmooc.domain.LuckyDog;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
 import com.successfactors.sfmooc.service.RankingService;
@@ -40,8 +41,8 @@ public class RankingServiceImpl implements RankingService{
     }
 
     @Override
-    public int updatePointsForLottery(Integer sessionId, Integer luckyNumber) {
-        return pointsDAO.updatePointsForLottery(sessionId, luckyNumber);
+    public int updatePointsForLottery(Integer sessionId, List<LuckyDog> luckyDogs) {
+        return pointsDAO.updatePointsForLottery(sessionId, luckyDogs);
     }
 
     @Override
