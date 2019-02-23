@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.LotteryDAO;
 import com.successfactors.sfmooc.dao.PointsDAO;
+import com.successfactors.sfmooc.dao.SessionDAO;
 import com.successfactors.sfmooc.domain.LuckyDog;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
@@ -31,6 +32,9 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Autowired
     private LotteryDAO lotteryDAO;
+
+    @Autowired
+    private SessionDAO sessionDAO;
 
     @Override
     public int getTotalPoints(String userId) {
@@ -118,12 +122,14 @@ public class PointsDAOImpl implements PointsDAO{
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int updatePointsForHost(Integer sessionId, String userId) {
         int sessionCount = getSessionCount(sessionId, userId);
+        boolean noHost = sessionDAO.isSessionNoHost(sessionId);
+        int hostPoints = noHost ? 1 : 5;
         if (sessionCount == 0) {
             return jdbcTemplate.update("insert into points(user_id, session_id, host) values (?, ?, ?)",
-                    new Object[]{userId, sessionId, 5});
+                    new Object[]{userId, sessionId, hostPoints});
         } else {
-            return jdbcTemplate.update("update points set host = 5 where user_id = ? and session_id = ? ",
-                    new Object[]{userId, sessionId});
+            return jdbcTemplate.update("update points set host = ? where user_id = ? and session_id = ? ",
+                    new Object[]{hostPoints, userId, sessionId});
         }
     }
 
