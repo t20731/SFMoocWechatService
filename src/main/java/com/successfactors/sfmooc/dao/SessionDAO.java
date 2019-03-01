@@ -23,5 +23,5 @@ public interface SessionDAO {
     int getLike(String userId, Integer sessionId);
     List<String> getRegisteredUsers(Integer sessionId);
     List<Session> getSessionRankingList(int group);
-    boolean isSessionNoHost(Integer sessionId);
+    int getSharePoints(Integer sessionId);
 }

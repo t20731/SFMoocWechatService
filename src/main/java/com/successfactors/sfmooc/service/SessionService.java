@@ -3,6 +3,7 @@ package com.successfactors.sfmooc.service;
 import com.successfactors.sfmooc.domain.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface SessionService {
@@ -17,7 +18,7 @@ public interface SessionService {
     int like(String userId, Integer sessionId, Integer like);
     int getLike(String userId, Integer sessionId);
     int getSessionLikeCount(Integer sessionId );
-    String start(String userId, Integer sessionId);
+    Map<String, Object> start(String userId, Integer sessionId);
     String getCheckInCode(Integer sessionId);
     Set<String> getAttendeeList(Integer sessionId);
     int updateLuckyNumber(Integer sessionId, Integer luckyNumber);

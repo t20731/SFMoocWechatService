@@ -37,10 +37,9 @@ public class CheckinController {
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(code) || sessionId == null || sessionId == 0) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT, null);
         }
-        code = URLDecoder.decode(code, "UTF-8");
-        logger.info("Code after decode: " + code);
         String checkInCode = sessionService.getCheckInCode(sessionId);
-        if (checkInCode != null && checkInCode.equalsIgnoreCase(code)) {
+        logger.info("checkInCode: " + code + ",code trim: " + code.trim());
+        if (checkInCode != null && checkInCode.equalsIgnoreCase(code.trim())) {
             int status = rankingService.updatePointsForCheckin(sessionId, userId);
             return new Result(status, Constants.SUCCESS, null);
         } else {

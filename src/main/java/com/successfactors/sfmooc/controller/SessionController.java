@@ -194,9 +194,7 @@ public class SessionController {
         if(enrollments < Constants.MIN_MEMBERS){
             return new Result(-1, Constants.NOT_AUTHORIZED);
         }
-        String checkInCode = sessionService.start(userId, sessionId);
-        Map<String, Object> retObj = new HashMap<>(1);
-        retObj.put("CheckInCode", checkInCode);
+        Map<String, Object> retObj = sessionService.start(userId, sessionId);
         return new Result(1, Constants.SUCCESS, retObj);
     }
 

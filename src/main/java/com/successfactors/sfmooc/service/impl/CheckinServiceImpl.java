@@ -60,8 +60,7 @@ public class CheckinServiceImpl implements CheckinService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int confirmCheckinCode(Integer sessionId, String code, String userId) {
-        int status = sessionDAO.updateCheckinCode(sessionId, code);
-        status += rankingService.updatePointsForHost(sessionId, userId);
-        return status;
+         sessionDAO.updateCheckinCode(sessionId, code);
+         return rankingService.updatePointsForHost(sessionId, userId);
     }
 }

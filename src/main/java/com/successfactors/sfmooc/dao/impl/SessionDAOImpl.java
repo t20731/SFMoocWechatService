@@ -455,12 +455,13 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
-    public boolean isSessionNoHost(Integer sessionId){
-        Integer noHost = jdbcTemplate.queryForObject("select noHost from session where id = ?",
+    public int getSharePoints(Integer sessionId){
+        Integer sharePoints = jdbcTemplate.queryForObject("select case when s.nohost = 1 then 1 else g.share_points end as share_points " +
+                        "from session s, `group` g where s.type_id = g.id and s.id = ?",
                 new Object[]{sessionId}, (resultSet, i) -> {
-                    return resultSet.getInt("noHost");
+                    return resultSet.getInt("share_points");
                 });
-        return noHost == 0 ? false : true;
+        return sharePoints;
     }
 
     @Override
