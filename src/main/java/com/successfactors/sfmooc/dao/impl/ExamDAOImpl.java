@@ -1,6 +1,7 @@
 package com.successfactors.sfmooc.dao.impl;
 
 import com.successfactors.sfmooc.dao.ExamDAO;
+import com.successfactors.sfmooc.domain.RankingItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,25 @@ public class ExamDAOImpl implements ExamDAO {
             }
         });
         return answerMap;
+    }
+
+    @Override
+    public List<RankingItem> getExamRankingList(Integer sessionId){
+        String query = "select a.id, a.nickname, a.avatarUrl, b.exam_points as exam_points " +
+                "from  (select id, nickname, avatarUrl from user) a " +
+                "inner join " +
+                "  (select p.user_id, ifnull(exam,0) as exam_points from points p " +
+                " where p.session_id = ? ) b " +
+                "on a.id = b.user_id order by exam_points desc";
+
+        return jdbcTemplate.query(query, new Object[]{sessionId}, (resultSet,  i) -> {
+                RankingItem rankingItem = new RankingItem();
+                rankingItem.setRank(i+1);
+                rankingItem.setUserId(resultSet.getString("id"));
+                rankingItem.setNickname(resultSet.getString("nickname"));
+                rankingItem.setAvatarUrl(resultSet.getString("avatarUrl"));
+                rankingItem.setPoints(resultSet.getInt("exam_points"));
+                return rankingItem;
+            });
     }
 }

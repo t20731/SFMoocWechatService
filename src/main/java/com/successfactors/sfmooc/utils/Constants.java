@@ -14,8 +14,6 @@ public class Constants {
         ORDER_FIELD_SET.add(Constants.TOTAL_MEMBERS);
     }
 
-    public static final Integer QUESTION_THRESHOLD = 3;
-
     public static final String SUCCESS = "ok";
 
     public static final String ILLEGAL_ARGUMENT = "illegal_argument";

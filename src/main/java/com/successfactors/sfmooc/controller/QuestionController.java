@@ -34,9 +34,6 @@ public class QuestionController {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
         }
         int status = questionService.editQuestion(question);
-        if (status == -1) {
-            return new Result(-1, "exceed_threshold");
-        }
         return new Result(status, Constants.SUCCESS);
     }
 
