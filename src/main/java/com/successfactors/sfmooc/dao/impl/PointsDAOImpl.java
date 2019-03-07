@@ -155,11 +155,9 @@ public class PointsDAOImpl implements PointsDAO{
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        for (LuckyDog luckyDog : luckyDogs){
-                            ps.setInt(1, luckyDog.getPoints());
-                            ps.setInt(2, sessionId);
-                            ps.setString(3, luckyDog.getUserId());
-                        }
+                        ps.setInt(1, luckyDogs.get(i).getPoints());
+                        ps.setInt(2, sessionId);
+                        ps.setString(3, luckyDogs.get(i).getUserId());
                     }
                     @Override
                     public int getBatchSize() {
