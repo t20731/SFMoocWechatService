@@ -1,6 +1,7 @@
 package com.successfactors.sfmooc.service.impl;
 
 import com.successfactors.sfmooc.dao.CheckinDAO;
+import com.successfactors.sfmooc.dao.GroupDAO;
 import com.successfactors.sfmooc.dao.SessionDAO;
 import com.successfactors.sfmooc.service.CacheService;
 import com.successfactors.sfmooc.service.CheckinService;
@@ -28,6 +29,9 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Autowired
     private SessionDAO sessionDAO;
+
+    @Autowired
+    private GroupDAO groupDAO;
 
     @Autowired
     private RankingService rankingService;
@@ -61,6 +65,7 @@ public class CheckinServiceImpl implements CheckinService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int confirmCheckinCode(Integer sessionId, String code, String userId) {
          sessionDAO.updateCheckinCode(sessionId, code);
+         groupDAO.markSessionAsShared(userId, sessionId);
          return rankingService.updatePointsForHost(sessionId, userId);
     }
 }

@@ -51,4 +51,11 @@ public class GroupDAOImpl implements GroupDAO {
         return jdbcTemplate.update("replace into user_group_map(user_id, group_id, join_date) values (?, ?, ?)",
                 new Object[]{userId, groupId, now});
     }
+
+    @Override
+    public int markSessionAsShared(String userId, Integer sessionId) {
+        return jdbcTemplate.update("update user_group_map set shared = ? where user_id = ? and group_id = (" +
+                        "select type_id from session where id = ?)",
+                new Object[]{1, userId, sessionId});
+    }
 }
