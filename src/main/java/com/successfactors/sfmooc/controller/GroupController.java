@@ -43,5 +43,23 @@ public class GroupController {
         }
     }
 
+    @RequestMapping(value = "add", method = RequestMethod.POST)
+    public Result addGroup(@RequestBody Map paramsMap) {
+        if (paramsMap == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        String groupName = (String) paramsMap.get("name");
+        Integer sharePoints = (Integer) paramsMap.get("point");
+        if (groupName == null || sharePoints == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = groupService.addGroup(groupName,sharePoints);
+        if (status > 0) {
+            return new Result(status, Constants.SUCCESS);
+        } else {
+            return new Result(status, Constants.ERROR);
+        }
+    }
+
 
 }

@@ -51,4 +51,10 @@ public class GroupDAOImpl implements GroupDAO {
         return jdbcTemplate.update("replace into user_group_map(user_id, group_id, join_date) values (?, ?, ?)",
                 new Object[]{userId, groupId, now});
     }
+
+    @Override
+    public int addGroup(String groupName, Integer sharePoints) {
+        String insertSQL = "insert into `group` (name,share_points) values (?, ?)";
+        return jdbcTemplate.update(insertSQL, new Object[]{groupName,sharePoints});
+    }
 }

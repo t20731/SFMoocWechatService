@@ -48,4 +48,9 @@ public class GroupServiceImpl implements GroupService {
     public int addUserToGroup(String userId, Integer groupId) {
         return groupDAO.addUserToGroup(userId, groupId);
     }
+
+    @Override
+    public int addGroup(String groupName, Integer sharePoints) {
+        return groupDAO.addGroup(groupName,sharePoints);
+    }
 }
