@@ -35,14 +35,7 @@ public class QuestionDAOImpl implements QuestionDAO {
     public int editQuestion(Question question) {
         Integer questionId = question.getId();
         if (questionId == null) {
-            logger.info("add question");
-            Integer questionCount = getQuestionCount(question.getSessionId());
-            logger.info("existing " + questionCount + " question(s)");
-            if (questionCount < Constants.QUESTION_THRESHOLD) {
-                return addQuestion(question);
-            } else {
-                return -1;
-            }
+            return addQuestion(question);
         } else {
             logger.info("update question " + questionId);
             return updateQuestion(question);

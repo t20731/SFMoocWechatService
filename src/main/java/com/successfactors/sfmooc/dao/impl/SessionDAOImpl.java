@@ -178,7 +178,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     @Override
     public UserSession getSessionById(Integer sessionId, String userId) {
-        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.difficulty, s.checkin_code, s.question_status, "+
+        String query = "select s.id as sid, s.topic, s.description, s.start_date, s.end_date, s.difficulty, s.noHost, s.checkin_code, s.question_status, "+
                 "d.name as direction, l.name as location, s.status, s.image_src, " +
                 "u.id as uid, u.nickname, u.avatarUrl, g.id as g_id, g.name as g_name from user u, direction d, location l, session s, `group` g where s.owner = u.id " +
                 "and s.direction_id = d.id and s.location_id = l.id and s.type_id = g.id and s.id = ? ";
@@ -194,6 +194,7 @@ public class SessionDAOImpl implements SessionDAO {
                 String endDate = DateUtil.formatDateToMinutes(resultSet.getString("end_date"));
                 session.setEndDate(endDate);
                 session.setDifficulty(resultSet.getInt("difficulty"));
+                session.setTea2(resultSet.getInt("noHost"));
                 Location location = new Location();
                 location.setName(resultSet.getString("location"));
                 session.setLocation(location);
@@ -266,16 +267,16 @@ public class SessionDAOImpl implements SessionDAO {
             Integer sessionId = session.getId();
             if (sessionId != null) {
             String updateSql = "update session set topic = ?, description = ?, start_date = ?, end_date = ?, " +
-                    "location_id = ?, direction_id = ?, difficulty = ?, last_modified_date = ?, type_id = ? where id = ?";
+                    "location_id = ?, direction_id = ?, difficulty = ?, last_modified_date = ?, type_id = ?, noHost = ? where id = ?";
             return jdbcTemplate.update(updateSql, new Object[]{session.getTopic(), session.getDescription(),
                     session.getStartDate(), session.getEndDate(), session.getLocation().getId(), session.getDirection().getId(),
-                    session.getDifficulty(), now, session.getTypeId(), session.getId()});
+                    session.getDifficulty(), now, session.getTypeId(), session.getTea2(), session.getId()});
         } else {
             String insertSQL = "insert into session(owner, topic, description, start_date, end_date, location_id, " +
-                    "direction_id, difficulty, image_src, status, created_date, last_modified_date, type_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "direction_id, difficulty, image_src, status, created_date, last_modified_date, type_id, noHost) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             return jdbcTemplate.update(insertSQL, new Object[]{session.getOwner().getId(), session.getTopic(),
                     session.getDescription(), session.getStartDate(), session.getEndDate(), session.getLocation().getId(),
-                    session.getDirection().getId(), session.getDifficulty(), session.getTileImageSrc(), 0, now, now,session.getTypeId()});
+                    session.getDirection().getId(), session.getDifficulty(), session.getTileImageSrc(), 0, now, now,session.getTypeId(), session.getTea2()});
         }
     }
 
@@ -451,6 +452,16 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     public int updateLuckyNumber(Integer sessionId, Integer luckyNumber) {
         return jdbcTemplate.update("update session set lucky_number = ? where id = ?", new Object[]{luckyNumber, sessionId});
+    }
+
+    @Override
+    public int getSharePoints(Integer sessionId){
+        Integer sharePoints = jdbcTemplate.queryForObject("select case when s.nohost = 1 then 1 else g.share_points end as share_points " +
+                        "from session s, `group` g where s.type_id = g.id and s.id = ?",
+                new Object[]{sessionId}, (resultSet, i) -> {
+                    return resultSet.getInt("share_points");
+                });
+        return sharePoints;
     }
 
     @Override

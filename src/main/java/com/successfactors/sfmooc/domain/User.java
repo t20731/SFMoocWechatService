@@ -14,6 +14,8 @@ public class User {
     private String seat;
     private String blog;
     private String github;
+    private int shared;
+    private String shareType;
 
     public User() {
     }
@@ -100,5 +102,21 @@ public class User {
 
     public void setGithub(String github) {
         this.github = github;
+    }
+
+    public int getShared() {
+        return shared;
+    }
+
+    public void setShared(int shared) {
+        this.shared = shared;
+    }
+
+    public String getShareType() {
+        return shareType;
+    }
+
+    public void setShareType(String shareType) {
+        this.shareType = shareType;
     }
 }

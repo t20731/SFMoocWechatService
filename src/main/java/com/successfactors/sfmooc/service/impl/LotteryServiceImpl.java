@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.service.impl;
 
 import com.successfactors.sfmooc.dao.LotteryDAO;
 import com.successfactors.sfmooc.domain.LotteryResult;
+import com.successfactors.sfmooc.domain.LuckyDog;
 import com.successfactors.sfmooc.service.LotteryService;
 import com.successfactors.sfmooc.service.RankingService;
 import com.successfactors.sfmooc.service.SessionService;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -49,10 +50,10 @@ public class LotteryServiceImpl implements LotteryService{
             int number = getLuckyNumber(userList.size());
             logger.info("Lucky number is: " + number);
             if (number > 0) {
-                List<String> luckyDogs = lotteryDAO.getLuckyDogs(sessionId, number);
-                if(!StringUtils.isEmpty(luckyDogs)){
+                List<LuckyDog> luckyDogs = lotteryDAO.getLuckyDogs(sessionId, number);
+                if(!CollectionUtils.isEmpty(luckyDogs)){
                     sessionService.updateLuckyNumber(sessionId, number);
-                    rankingService.updatePointsForLottery(sessionId, number);
+                    rankingService.updatePointsForLottery(sessionId, luckyDogs);
                 }
                 return new LotteryResult(number, luckyDogs);
             }
@@ -61,10 +62,10 @@ public class LotteryServiceImpl implements LotteryService{
         return new LotteryResult(0, new ArrayList<>());
     }
 
-    @Override
-    public LotteryResult query() {
-        return lotteryDAO.query();
-    }
+//    @Override
+//    public LotteryResult query() {
+//        return lotteryDAO.query();
+//    }
 
 //    private int getLuckyNumber(int size) {
 //        Random random = new Random();

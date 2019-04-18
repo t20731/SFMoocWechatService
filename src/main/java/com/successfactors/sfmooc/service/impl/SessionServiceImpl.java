@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -73,11 +70,14 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public String start(String userId, Integer sessionId) {
+    public Map<String, Object> start(String userId, Integer sessionId) {
+        Map<String, Object> retMap = new HashMap<>(2);
         String checkInCode = checkinService.generateCheckinCode();
         logger.info("CheckIn code: " + checkInCode);
-        checkinService.confirmCheckinCode(sessionId, checkInCode, userId);
-        return checkInCode;
+        retMap.put("CheckInCode", checkInCode);
+        int sharePoints = checkinService.confirmCheckinCode(sessionId, checkInCode, userId);
+        retMap.put("SharePoints", sharePoints);
+        return retMap;
     }
 
     @Override

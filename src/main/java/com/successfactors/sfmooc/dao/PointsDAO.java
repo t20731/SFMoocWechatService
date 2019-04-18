@@ -1,5 +1,6 @@
 package com.successfactors.sfmooc.dao;
 
+import com.successfactors.sfmooc.domain.LuckyDog;
 import com.successfactors.sfmooc.domain.Points;
 import com.successfactors.sfmooc.domain.RankingItem;
 
@@ -12,7 +13,7 @@ public interface PointsDAO {
     Points getPointsById(Integer sessionId, String userId);
     int updatePointsForHost(Integer sessionId, String userId);
     int updatePointsForCheckin(Integer sessionId, String userId);
-    int updatePointsForLottery(Integer sessionId, Integer luckyNumber);
+    int updatePointsForLottery(Integer sessionId, List<LuckyDog> luckyDogs);
     int updatePointsForExam(Integer sessionId, String userId, int points);
     int getTotalPoints(String userId);
 }

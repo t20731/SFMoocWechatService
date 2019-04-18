@@ -8,5 +8,5 @@ public interface LotteryService {
 
     LotteryResult draw(Integer sessionId);
 
-    LotteryResult query();
+//    LotteryResult query();
 }

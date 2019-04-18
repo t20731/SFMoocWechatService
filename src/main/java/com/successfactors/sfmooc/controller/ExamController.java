@@ -38,11 +38,6 @@ public class ExamController {
         return new Result(0, Constants.SUCCESS, questionList);
     }
 
-//    @RequestMapping(value = "/load/session", method = RequestMethod.GET)
-//    public Result loadHistorySessions() {
-//        List<SessionVO> sessions = sessionService.loadHistorySessions();
-//        return new Result(0, Constants.SUCCESS, sessions);
-//    }
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public Result submitAnswers(@RequestBody Answer answer) {
@@ -62,6 +57,15 @@ public class ExamController {
         } else {
             return new Result(-2, Constants.NOT_AUTHORIZED);
         }
+    }
+
+    @RequestMapping(value = "/ranking/list/{sessionId}", method = RequestMethod.GET)
+    public Result getExamRankingList(@PathVariable("sessionId") Integer sessionId) {
+        if (sessionId == null || sessionId <= 0) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        List<RankingItem> rankingList = examService.getExamRankingList(sessionId);
+        return new Result(0, Constants.SUCCESS, rankingList);
     }
 
 }

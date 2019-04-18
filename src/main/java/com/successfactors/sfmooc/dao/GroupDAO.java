@@ -9,4 +9,5 @@ public interface GroupDAO {
     boolean isUserInGroup(String userId, Integer groupId);
     int addUserToGroup(String userId, Integer groupId);
     int addGroup(String groupName, Integer sharePoints);
+    int markSessionAsShared(String userId, Integer sessionId);
 }

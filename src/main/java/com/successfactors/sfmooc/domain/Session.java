@@ -24,6 +24,7 @@ public class Session {
     private int likeCount;
     private int typeId;
     private int enrollments;
+    private int tea2;
 
     public Session() {
     }
@@ -180,4 +181,11 @@ public class Session {
 
     public  void setTypeId(int typeId){this.typeId = typeId;}
 
+    public int getTea2() {
+        return tea2;
+    }
+
+    public void setTea2(int tea2) {
+        this.tea2 = tea2;
+    }
 }
