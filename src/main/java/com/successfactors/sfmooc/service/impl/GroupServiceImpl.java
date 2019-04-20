@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class GroupServiceImpl implements GroupService {
@@ -28,16 +27,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getGroups(String userId) {
         List<Group> groups = groupDAO.getGroups();
-        String toady = DateUtil.formatDate(new Date());
-        String deadline = env.getProperty("t2.enroll.deadline");
-        if(toady.compareTo(deadline) < 0){
-            if(userId != null && !Constants.DEFAULT_USER_ID.equalsIgnoreCase(userId)) {
-                for (Group group : groups) {
-                    if ("T2".equalsIgnoreCase(group.getName())) {
-                        boolean isUserInGroup = groupDAO.isUserInGroup(userId, group.getId());
-                        group.setCanJoin(!isUserInGroup);
-                        break;
-                    }
+        String openGroups = env.getProperty("open.enroll.groups");
+        String[] groupArray = openGroups.split(",");
+        Set<String> groupNameSet = new HashSet<>(Arrays.asList(groupArray));
+        if(userId != null && !Constants.DEFAULT_USER_ID.equalsIgnoreCase(userId)) {
+            for (Group group : groups) {
+                if (groupNameSet.contains(group.getName())) {
+                    boolean isUserInGroup = groupDAO.isUserInGroup(userId, group.getId());
+                    group.setCanJoin(!isUserInGroup);
                 }
             }
         }

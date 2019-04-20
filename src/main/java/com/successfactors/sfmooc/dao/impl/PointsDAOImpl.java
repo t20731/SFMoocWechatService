@@ -75,7 +75,7 @@ public class PointsDAOImpl implements PointsDAO{
 
     @Override
     public List<RankingItem> getUserRankingListByGroupId(String season,int groupId){
-        if(groupId == 0){
+        if(groupId == 1){
             return this.getUserRankingList(season);
         }
 
