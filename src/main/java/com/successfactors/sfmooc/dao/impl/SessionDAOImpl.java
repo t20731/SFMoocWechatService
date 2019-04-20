@@ -324,9 +324,10 @@ public class SessionDAOImpl implements SessionDAO {
         int completed = fetchParams.getCompleted();
         if (completed == 1) {
             sb.append("and s2.end_date < now() ");
-        } else {
-            sb.append("and s2.end_date >= now() ");
         }
+//        else {
+//            sb.append("and s2.end_date >= now() ");
+//        }
         if (userId != null) {
             sb = new StringBuilder("select s.* from (").append(sb.toString()).append(") s, user_session_map usmap1 " +
                     "where s.sid = usmap1.session_id and usmap1.user_id = ? ");
@@ -354,7 +355,7 @@ public class SessionDAOImpl implements SessionDAO {
             }
             sb.append(",");
         }
-        sb.append(" start_date asc limit ?, ?");
+        sb.append(" sid desc limit ?, ?");
         params.add(fetchParams.getStartPage());
         params.add(fetchParams.getPageSize());
         logger.info("Session list query: " + sb.toString());

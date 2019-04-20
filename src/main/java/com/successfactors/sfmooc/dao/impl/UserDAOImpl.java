@@ -57,7 +57,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> getUsersByOrder() {
         String query = "select u.id, u.avatarUrl, u.nickname, u.signature, ug.shared, ug.share_type from user u, user_group_map ug " +
-                "where u.id = ug.user_id and ug.group_id = 1 order by share_order, join_date";
+                "where u.id = ug.user_id and ug.group_id = 2 order by share_order, join_date";
         List<User> users = jdbcTemplate.query(query, new RowMapper<User>() {
             @Nullable
             @Override
