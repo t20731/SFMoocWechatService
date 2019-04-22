@@ -7,4 +7,5 @@ import java.util.List;
 public interface GroupService {
     List<Group> getGroups(String userId);
     int addUserToGroup(String userId, Integer groupId);
+    int addGroup(String groupName, Integer sharePoints);
 }

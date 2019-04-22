@@ -53,6 +53,11 @@ public class GroupDAOImpl implements GroupDAO {
     }
 
     @Override
+    public int addGroup(String groupName, Integer sharePoints) {
+        String insertSQL = "insert into `group` (name,share_points) values (?, ?)";
+        return jdbcTemplate.update(insertSQL, new Object[]{groupName,sharePoints});
+      }
+
     public int markSessionAsShared(String userId, Integer sessionId) {
         return jdbcTemplate.update("update user_group_map set shared = ? where user_id = ? and group_id = (" +
                         "select type_id from session where id = ?)",
