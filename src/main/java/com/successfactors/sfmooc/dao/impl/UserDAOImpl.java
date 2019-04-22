@@ -34,7 +34,7 @@ public class UserDAOImpl implements UserDAO {
         if (userCnt == 0) {
             int status = jdbcTemplate.update("insert into user(id, nickname, gender, avatarUrl, status) values (?, ?, ?, ?, ?)",
                     new Object[]{id, user.getNickName(), user.getGender(), user.getAvatarUrl(), user.getStatus()});
-            status += groupDAO.addUserToGroup(id, 0);
+            status += groupDAO.addUserToGroup(id, 1);
             return status;
         } else if (userCnt == 1) {
             return jdbcTemplate.update("update user set nickname = ?, gender = ?, avatarUrl = ? where id = ?",
