@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.service.impl;
 
 import com.successfactors.sfmooc.dao.GroupDAO;
 import com.successfactors.sfmooc.domain.Group;
+import com.successfactors.sfmooc.domain.User;
 import com.successfactors.sfmooc.service.GroupService;
 import com.successfactors.sfmooc.utils.Constants;
 import com.successfactors.sfmooc.utils.DateUtil;
@@ -47,7 +48,15 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public int removeUserFromGroup(String userId, Integer groupId) {  return groupDAO.removeUserFromGroup(userId,groupId); }
+
+    @Override
     public int addGroup(String groupName, Integer sharePoints) {
         return groupDAO.addGroup(groupName,sharePoints);
+    }
+
+    @Override
+    public List<User> getUserByGroupId(Integer groupId) {
+        return groupDAO.getUserByGroupId(groupId);
     }
 }
