@@ -4,6 +4,7 @@ public class Group {
     private Integer id;
     private String name;
     private Boolean canJoin = false;
+    private Integer userNum;
     public Group( ) {
     }
     public Integer getId() {
@@ -25,5 +26,13 @@ public class Group {
 
     public void setCanJoin(Boolean canJoin) {
         this.canJoin = canJoin;
+    }
+
+    public Integer getUserNum() {
+        return userNum;
+    }
+
+    public void setUserNum(Integer userNum) {
+        this.userNum = userNum;
     }
 }

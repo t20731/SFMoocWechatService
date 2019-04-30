@@ -2,6 +2,7 @@ package com.successfactors.sfmooc.controller;
 
 import com.successfactors.sfmooc.domain.Group;
 import com.successfactors.sfmooc.domain.Result;
+import com.successfactors.sfmooc.domain.User;
 import com.successfactors.sfmooc.service.GroupService;
 import com.successfactors.sfmooc.utils.Constants;
 import org.slf4j.Logger;
@@ -43,6 +44,24 @@ public class GroupController {
         }
     }
 
+    @RequestMapping(value = "leave", method = RequestMethod.POST)
+    public Result removeUserFromGroup(@RequestBody Map paramsMap) {
+        if (paramsMap == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        String userId = (String) paramsMap.get("userId");
+        Integer groupId = (Integer) paramsMap.get("groupId");
+        if (userId == null || groupId == null) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        int status = groupService.removeUserFromGroup(userId, groupId);
+        if (status > 0) {
+            return new Result(status, Constants.SUCCESS);
+        } else {
+            return new Result(status, Constants.ERROR);
+        }
+    }
+
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Result addGroup(@RequestBody Map paramsMap) {
         if (paramsMap == null) {
@@ -59,6 +78,16 @@ public class GroupController {
         } else {
             return new Result(status, Constants.ERROR);
         }
+    }
+
+    @RequestMapping(value = "listUser/{groupId}", method = RequestMethod.GET)
+    public List<User> getUsersByGroupId(@PathVariable("groupId") Integer groupId){
+        return groupService.getUserByGroupId(groupId);
+    }
+
+    @RequestMapping(value = "listAll", method = RequestMethod.GET)
+    public List<Group> getAllGroups(){
+        return groupService.getAllGroups();
     }
 
 
