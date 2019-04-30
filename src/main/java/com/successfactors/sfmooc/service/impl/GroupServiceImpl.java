@@ -42,6 +42,8 @@ public class GroupServiceImpl implements GroupService {
         return groups;
     }
 
+    public List<Group> getAllGroups() { return groupDAO.getGroupsWithUserNum();}
+
     @Override
     public int addUserToGroup(String userId, Integer groupId) {
         return groupDAO.addUserToGroup(userId, groupId);
@@ -59,4 +61,5 @@ public class GroupServiceImpl implements GroupService {
     public List<User> getUserByGroupId(Integer groupId) {
         return groupDAO.getUserByGroupId(groupId);
     }
+
 }

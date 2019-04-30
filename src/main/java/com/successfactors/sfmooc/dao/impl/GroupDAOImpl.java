@@ -21,7 +21,7 @@ public class GroupDAOImpl implements GroupDAO {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Group> getGroups() {
+    public List<Group>  getGroups() {
         String query = "select id,name from `group` order by id ASC";
         List<Group> groups = jdbcTemplate.query(query, new RowMapper<Group>() {
             @Override
@@ -35,10 +35,25 @@ public class GroupDAOImpl implements GroupDAO {
         return groups;
     }
 
+    public List<Group>  getGroupsWithUserNum() {
+        String query = "select g.id,g.name,count(ug.user_id) as num from `group`g,user_group_map ug where ug.group_id = g.id group by g.id order by id ASC";
+        List<Group> groups = jdbcTemplate.query(query, new RowMapper<Group>() {
+            @Override
+            public Group mapRow(ResultSet resultSet, int i) throws SQLException {
+                Group group = new Group();
+                group.setId(resultSet.getInt("id"));
+                group.setName(resultSet.getString("name"));
+                group.setUserNum(resultSet.getInt("num"));
+                return group;
+            }
+        });
+        return groups;
+    }
+
     @Override
     public boolean isUserInGroup(String userId, Integer groupId) {
         int count = jdbcTemplate.queryForObject("select count(1) as cnt from user_group_map " +
-                "where user_id = ? and group_id = ?", new Object[]{userId, groupId}, new RowMapper<Integer>() {
+                "where user_id = ? and group_id = ?", new Object[]{userId, groupId}, new RowMapper<Integer>(){
             @Override
             public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
                 return resultSet.getInt("cnt");
