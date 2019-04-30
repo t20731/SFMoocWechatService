@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface GroupDAO {
     List<Group> getGroups();
+    List<Group> getGroupsWithUserNum();
     boolean isUserInGroup(String userId, Integer groupId);
     int addUserToGroup(String userId, Integer groupId);
     int removeUserFromGroup(String userId, Integer groupId);

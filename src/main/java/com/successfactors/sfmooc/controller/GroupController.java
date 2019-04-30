@@ -85,5 +85,10 @@ public class GroupController {
         return groupService.getUserByGroupId(groupId);
     }
 
+    @RequestMapping(value = "listAll", method = RequestMethod.GET)
+    public List<Group> getAllGroups(){
+        return groupService.getAllGroups();
+    }
+
 
 }
