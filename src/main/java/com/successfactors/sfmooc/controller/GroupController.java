@@ -90,5 +90,12 @@ public class GroupController {
         return groupService.getAllGroups();
     }
 
+    @RequestMapping(value = "delete/{groupId}", method = RequestMethod.POST)
+    public Result deleteGroup(@PathVariable("groupId") Integer groupId) {
+        if (groupId == null || groupId == 1) {
+            return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        return new Result(groupService.deleteGroup(groupId), Constants.SUCCESS);
+    }
 
 }

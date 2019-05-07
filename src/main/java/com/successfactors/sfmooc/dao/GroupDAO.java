@@ -14,4 +14,5 @@ public interface GroupDAO {
     int addGroup(String groupName, Integer sharePoints);
     int markSessionAsShared(String userId, Integer sessionId);
     List<User> getUserByGroupId(Integer groupId);
+    int deleteGroup(Integer groupId);
 }

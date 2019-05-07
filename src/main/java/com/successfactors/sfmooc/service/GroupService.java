@@ -12,4 +12,5 @@ public interface GroupService {
     int addGroup(String groupName, Integer sharePoints);
     List<User> getUserByGroupId(Integer groupId);
     List<Group> getAllGroups();
+    int deleteGroup(Integer groupId);
 }

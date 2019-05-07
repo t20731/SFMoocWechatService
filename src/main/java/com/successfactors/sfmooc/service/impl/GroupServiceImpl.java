@@ -62,4 +62,6 @@ public class GroupServiceImpl implements GroupService {
         return groupDAO.getUserByGroupId(groupId);
     }
 
+    @Override
+    public int deleteGroup(Integer groupId) { return groupDAO.deleteGroup(groupId);   }
 }
