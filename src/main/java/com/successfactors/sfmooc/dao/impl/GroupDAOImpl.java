@@ -103,4 +103,12 @@ public class GroupDAOImpl implements GroupDAO {
         });
         return users;
     }
+
+    @Override
+    public int deleteGroup(Integer groupId) {
+        jdbcTemplate.update("delete from `group` where id = ?",
+                new Object[]{groupId});
+        return jdbcTemplate.update("delete from user_group_map where group_id = ?",
+                new Object[]{groupId});
+    }
 }
