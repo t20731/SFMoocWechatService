@@ -36,7 +36,7 @@ public class GroupDAOImpl implements GroupDAO {
     }
 
     public List<Group>  getGroupsWithUserNum() {
-        String query = "select g.id,g.name,count(ug.user_id) as num from `group`g,user_group_map ug where ug.group_id = g.id group by g.id order by id ASC";
+        String query = "select g.id,g.name,count(ug.user_id) as num from `group`g left join user_group_map ug on ug.group_id = g.id group by g.id order by id ASC";
         List<Group> groups = jdbcTemplate.query(query, new RowMapper<Group>() {
             @Override
             public Group mapRow(ResultSet resultSet, int i) throws SQLException {
