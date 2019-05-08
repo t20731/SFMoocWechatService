@@ -69,8 +69,12 @@ public class GroupController {
         }
         String groupName = (String) paramsMap.get("name");
         Integer sharePoints = (Integer) paramsMap.get("point");
-        if (groupName == null || sharePoints == null) {
+        if (groupName == null) {
             return new Result(-1, Constants.ILLEGAL_ARGUMENT);
+        }
+        /*share point is 5 by default*/
+        if(sharePoints == null) {
+            sharePoints = 5;
         }
         int status = groupService.addGroup(groupName,sharePoints);
         if (status > 0) {
